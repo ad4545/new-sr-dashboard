@@ -115,3 +115,8 @@ Build a modern AMR web application dashboard inspired by a reference EV-Hub Drib
   - Row 2: Task Scheduler (7) | Activity Log (5)
   - Row 3: Maintenance (7) | Alerts (5)
 - Mobile keeps hamburger overlay pattern unchanged.
+
+## Iteration 5 (2026-04-17)
+- Reduced inter-widget gap to 5px (gap-[5px] mb-[5px]) and trimmed main padding to 6-8px
+- Sidebar now at left-5 (20px) with 30px gap before main content for more breathing room
+- Font sizes bumped: dashboard base 14px → 15px; widget titles text-lg → text-xl (20px); page title up to 34px on xl; scheduler rows bumped one step

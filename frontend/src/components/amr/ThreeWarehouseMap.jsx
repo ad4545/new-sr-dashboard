@@ -276,7 +276,7 @@ export const ThreeWarehouseMap = ({ onRobotClick }) => {
       <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2 min-w-0">
           <MapPinned className="h-4 w-4 text-[#00C2FF] shrink-0" strokeWidth={1.8} />
-          <h3 className="text-base font-extrabold text-white whitespace-nowrap">Warehouse Map</h3>
+          <h3 className="text-xl font-extrabold text-white whitespace-nowrap">Warehouse Map</h3>
           <span className="text-slate-700">·</span>
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500 truncate">
             Zone Alpha-West

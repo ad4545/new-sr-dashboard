@@ -41,8 +41,8 @@ export const ActivityLog = () => {
           <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500 mb-0.5">
             Last shift · {TASK_HISTORY.length} entries
           </div>
-          <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <History className="h-4 w-4 text-[#00C2FF]" strokeWidth={1.8} /> Activity Log
+          <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
+            <History className="h-[18px] w-[18px] text-[#00C2FF]" strokeWidth={1.8} /> Activity Log
           </h3>
         </div>
         <button

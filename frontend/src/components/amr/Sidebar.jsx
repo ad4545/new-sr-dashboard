@@ -63,12 +63,12 @@ export const Sidebar = ({ collapsed, onCollapseChange }) => {
 
       <aside
         data-testid="app-sidebar"
-        className={`fixed left-3 top-3 bottom-3 z-[60] flex flex-col
+        className={`fixed left-5 top-5 bottom-5 z-[60] flex flex-col
                     rounded-2xl border border-white/10
                     bg-black/55 backdrop-blur-2xl backdrop-saturate-150
                     shadow-[0_20px_60px_rgba(0,0,0,0.5)]
                     transition-all duration-300
-                    ${mobileOpen ? "translate-x-0" : "-translate-x-[120%] md:translate-x-0"}`}
+                    ${mobileOpen ? "translate-x-0" : "-translate-x-[140%] md:translate-x-0"}`}
         style={{ width }}
       >
         {/* Collapse toggle — floating pill on right edge */}

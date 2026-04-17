@@ -17,8 +17,8 @@ export const LiveActivities = () => {
             </span>
             {LIVE_TASKS.length} running
           </div>
-          <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <Activity className="h-4 w-4 text-[#00C2FF]" strokeWidth={1.8} /> Live Activities
+          <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
+            <Activity className="h-[18px] w-[18px] text-[#00C2FF]" strokeWidth={1.8} /> Live Activities
           </h3>
         </div>
       </div>
@@ -39,11 +39,11 @@ export const LiveActivities = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="font-mono text-[10px] text-[#00C2FF]">{t.id}</span>
+                    <span className="font-mono text-[11px] text-[#00C2FF]">{t.id}</span>
                     <span className="text-slate-700">·</span>
-                    <span className="text-[12px] font-semibold text-white truncate">{t.type}</span>
+                    <span className="text-[13px] font-semibold text-white truncate">{t.type}</span>
                   </div>
-                  <div className="font-mono text-[10px] text-slate-500 mt-0.5 truncate">
+                  <div className="font-mono text-[11px] text-slate-500 mt-0.5 truncate">
                     {t.from} <span className="text-slate-700">→</span> {t.to}
                   </div>
                 </div>

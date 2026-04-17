@@ -31,7 +31,7 @@ export const TopHeader = ({ breadcrumb = ["Pages", "Dashboard"], title = "Fleet 
           </div>
           <h1
             data-testid="page-title"
-            className="text-xl md:text-2xl xl:text-3xl font-extrabold tracking-tight text-white whitespace-nowrap"
+            className="text-2xl md:text-3xl xl:text-[34px] font-extrabold tracking-tight text-white whitespace-nowrap leading-tight"
           >
             {title}
           </h1>

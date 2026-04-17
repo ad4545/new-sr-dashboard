@@ -20,8 +20,8 @@ export const NotificationsPanel = () => {
             {NOTIFICATIONS.filter((n) => n.severity === "critical").length} crit ·{" "}
             {NOTIFICATIONS.filter((n) => n.severity === "warning").length} warn
           </div>
-          <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <Bell className="h-4 w-4 text-[#00C2FF]" strokeWidth={1.8} /> Alerts
+          <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
+            <Bell className="h-[18px] w-[18px] text-[#00C2FF]" strokeWidth={1.8} /> Alerts
           </h3>
         </div>
         <button

@@ -36,7 +36,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="amr-dashboard min-h-screen bg-[#0A0A0B] text-white relative overflow-x-hidden text-[14px]">
+    <div className="amr-dashboard min-h-screen bg-[#0A0A0B] text-white relative overflow-x-hidden text-[15px]">
       {/* Background ambient */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div className="absolute top-[-20%] left-[10%] h-[520px] w-[520px] rounded-full bg-[#0066FF]/10 blur-[140px]" />
@@ -60,16 +60,16 @@ export default function Dashboard() {
         <style>{`
           .amr-main { padding-left: 0; }
           @media (min-width: 768px) {
-            .amr-main[data-collapsed="1"] { padding-left: ${SIDEBAR_W.collapsed + 18}px; }
-            .amr-main[data-collapsed="0"] { padding-left: ${SIDEBAR_W.expanded + 18}px; }
+            .amr-main[data-collapsed="1"] { padding-left: ${SIDEBAR_W.collapsed + 30}px; }
+            .amr-main[data-collapsed="0"] { padding-left: ${SIDEBAR_W.expanded + 30}px; }
           }
         `}</style>
 
         <TopHeader breadcrumb={["Pages", "Dashboard"]} title="Fleet Operations" />
 
-        <div className="px-3 md:px-4 pb-4 flex-1">
+        <div className="px-[6px] md:px-[8px] pb-2 flex-1">
           {/* Row 1: Map (7) | Live Activities (5) */}
-          <div className="grid grid-cols-12 gap-3 mb-3">
+          <div className="grid grid-cols-12 gap-[5px] mb-[5px]">
             <div className="col-span-12 xl:col-span-7">
               <ThreeWarehouseMap onRobotClick={handleRobotClick} />
             </div>
@@ -79,7 +79,7 @@ export default function Dashboard() {
           </div>
 
           {/* Row 2: Task Scheduler (7) | Activity Log (5) */}
-          <div className="grid grid-cols-12 gap-3 mb-3">
+          <div className="grid grid-cols-12 gap-[5px] mb-[5px]">
             <div className="col-span-12 xl:col-span-7">
               <TasksScheduler />
             </div>
@@ -89,7 +89,7 @@ export default function Dashboard() {
           </div>
 
           {/* Row 3: Maintenance (7) | Alerts (5) */}
-          <div className="grid grid-cols-12 gap-3 mb-3">
+          <div className="grid grid-cols-12 gap-[5px] mb-[5px]">
             <div className="col-span-12 xl:col-span-7">
               <MaintenanceSchedule />
             </div>
@@ -98,7 +98,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between px-1 pt-3 pb-2 text-[11px] uppercase tracking-[0.2em] text-slate-600 border-t border-white/5 font-semibold">
+          <div className="flex items-center justify-between px-1 pt-2 pb-1 text-[11px] uppercase tracking-[0.2em] text-slate-600 border-t border-white/5 font-semibold">
             <span>Orbit.OS · AMR Control Plane</span>
             <span className="hidden sm:inline">Telemetry stream nominal · 120ms avg</span>
           </div>

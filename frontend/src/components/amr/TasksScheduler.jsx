@@ -66,7 +66,7 @@ export const TasksScheduler = () => {
           <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500 mb-0.5">
             Queue · drag to reorder
           </div>
-          <h3 className="text-lg font-extrabold text-white">Task Scheduler</h3>
+          <h3 className="text-xl font-extrabold text-white">Task Scheduler</h3>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -109,19 +109,19 @@ export const TasksScheduler = () => {
                   className="h-2 w-2 rounded-full shrink-0"
                   style={{ background: p.dot, boxShadow: `0 0 6px ${p.dot}` }}
                 />
-                <div className="font-mono text-[11px] text-[#00C2FF] w-16 shrink-0">{t.id}</div>
+                <div className="font-mono text-[12px] text-[#00C2FF] w-16 shrink-0">{t.id}</div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-semibold text-white truncate leading-tight">{t.type}</div>
-                  <div className="font-mono text-[10px] text-slate-500 truncate">
+                  <div className="text-[14px] font-semibold text-white truncate leading-tight">{t.type}</div>
+                  <div className="font-mono text-[11px] text-slate-500 truncate">
                     {t.origin} <span className="text-slate-700">→</span> {t.destination}
                   </div>
                 </div>
                 <div
-                  className={`px-1.5 py-0.5 rounded-full border text-[9px] font-mono uppercase tracking-wider ${p.style} shrink-0`}
+                  className={`px-1.5 py-0.5 rounded-full border text-[10px] font-mono uppercase tracking-wider ${p.style} shrink-0`}
                 >
                   {p.label}
                 </div>
-                <div className="font-mono text-[11px] text-slate-300 w-10 text-right tabular-nums shrink-0">
+                <div className="font-mono text-[12px] text-slate-300 w-12 text-right tabular-nums shrink-0">
                   {t.eta}
                 </div>
               </div>
