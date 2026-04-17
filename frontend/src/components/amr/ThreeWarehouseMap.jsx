@@ -1,15 +1,29 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { ROBOT_POSITIONS, SHELVES } from "../../data/mockData";
-import { Maximize2, Layers, Locate } from "lucide-react";
-import FleetOverlay from "./FleetOverlay";
+import { ROBOT_POSITIONS, SHELVES, FLEET } from "../../data/mockData";
+import {
+  Maximize2,
+  Layers,
+  Locate,
+  MapPinned,
+  Activity,
+  BatteryCharging,
+  ShieldCheck,
+} from "lucide-react";
 
-// Vanilla three.js implementation to avoid JSX attribute injection from visual-edits plugin.
-export const ThreeWarehouseMap = () => {
+// Vanilla three.js map. Robots are raycastable; clicking opens the robot drawer.
+export const ThreeWarehouseMap = ({ onRobotClick }) => {
   const mountRef = useRef(null);
-  const labelsRef = useRef(null);
-  const [labels, setLabels] = React.useState([]);
+  const rendererRef = useRef(null);
+
+  // Stats derived from fleet
+  const stats = {
+    total: FLEET.length,
+    active: FLEET.filter((r) => r.status === "active").length,
+    charging: FLEET.filter((r) => r.status === "charging").length,
+    service: FLEET.filter((r) => r.status === "maintenance").length,
+  };
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -18,22 +32,19 @@ export const ThreeWarehouseMap = () => {
     const width = mount.clientWidth;
     const height = mount.clientHeight;
 
-    // Scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color("#08090C");
     scene.fog = new THREE.Fog("#08090C", 30, 140);
 
-    // Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 200);
     camera.position.set(22, 22, 30);
 
-    // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
     renderer.setSize(width, height);
     mount.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
 
-    // Lights
     scene.add(new THREE.AmbientLight(0xffffff, 0.45));
     const dir = new THREE.DirectionalLight(0xffffff, 0.7);
     dir.position.set(15, 25, 10);
@@ -42,10 +53,11 @@ export const ThreeWarehouseMap = () => {
     pl.position.set(0, 15, 0);
     scene.add(pl);
 
-    // Solid floor
-    const floorGeo = new THREE.PlaneGeometry(200, 200);
-    const floorMat = new THREE.MeshStandardMaterial({ color: "#08090C" });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
+    // Floor
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(200, 200),
+      new THREE.MeshStandardMaterial({ color: "#08090C" })
+    );
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -0.01;
     scene.add(floor);
@@ -53,17 +65,16 @@ export const ThreeWarehouseMap = () => {
     // Grid
     const grid = new THREE.GridHelper(90, 90, new THREE.Color("#0066FF"), new THREE.Color("#1A1D24"));
     grid.material.transparent = true;
-    grid.material.opacity = 0.35;
+    grid.material.opacity = 0.3;
     scene.add(grid);
 
-    // Major accent grid (every 6)
     const gridMajor = new THREE.GridHelper(90, 15, new THREE.Color("#0066FF"), new THREE.Color("#0066FF"));
     gridMajor.material.transparent = true;
-    gridMajor.material.opacity = 0.18;
+    gridMajor.material.opacity = 0.16;
     gridMajor.position.y = 0.001;
     scene.add(gridMajor);
 
-    // Perimeter low walls
+    // Perimeter
     const wallMat = new THREE.MeshStandardMaterial({ color: "#1A1B22" });
     const addWall = (w, h, d, x, y, z) => {
       const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
@@ -79,12 +90,9 @@ export const ThreeWarehouseMap = () => {
     const dockMat = new THREE.MeshBasicMaterial({
       color: "#0066FF",
       transparent: true,
-      opacity: 0.3,
+      opacity: 0.28,
     });
-    const dockPositions = [
-      [-26, 20], [-22, 20], [-18, 20], [22, 20], [26, 20],
-    ];
-    dockPositions.forEach(([x, z]) => {
+    [[-26, 20], [-22, 20], [-18, 20], [22, 20], [26, 20]].forEach(([x, z]) => {
       const m = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 1.6), dockMat);
       m.rotation.x = -Math.PI / 2;
       m.position.set(x, 0.02, z);
@@ -103,47 +111,46 @@ export const ThreeWarehouseMap = () => {
       const m = new THREE.Mesh(geo, shelfMat);
       m.position.set(x, 0.5, z);
       scene.add(m);
-      const edges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(geo),
-        shelfEdgeMat
-      );
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo), shelfEdgeMat);
       edges.position.copy(m.position);
       scene.add(edges);
     });
 
-    // Robots
-    const robotMeshes = [];
+    // Robots (raycastable via group.userData)
+    const robotGroups = [];
     ROBOT_POSITIONS.forEach((r) => {
       const group = new THREE.Group();
       group.position.set(r.pos[0], 0, r.pos[2]);
+      group.userData = { id: r.id, color: r.color };
 
-      // Glow ring
-      const ringGeo = new THREE.RingGeometry(1.4, 1.75, 48);
-      const ringMat = new THREE.MeshBasicMaterial({
-        color: r.color,
-        transparent: true,
-        opacity: 0.45,
-        side: THREE.DoubleSide,
-      });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
+      const ring = new THREE.Mesh(
+        new THREE.RingGeometry(1.4, 1.75, 48),
+        new THREE.MeshBasicMaterial({
+          color: r.color,
+          transparent: true,
+          opacity: 0.45,
+          side: THREE.DoubleSide,
+        })
+      );
       ring.rotation.x = -Math.PI / 2;
       ring.position.y = 0.02;
       group.add(ring);
 
-      // Chassis
       const chassisGeo = new THREE.BoxGeometry(1.8, 0.8, 1.3);
-      const chassisMat = new THREE.MeshStandardMaterial({
-        color: "#15161A",
-        emissive: new THREE.Color(r.color),
-        emissiveIntensity: 0.35,
-        metalness: 0.6,
-        roughness: 0.35,
-      });
-      const chassis = new THREE.Mesh(chassisGeo, chassisMat);
+      const chassis = new THREE.Mesh(
+        chassisGeo,
+        new THREE.MeshStandardMaterial({
+          color: "#15161A",
+          emissive: new THREE.Color(r.color),
+          emissiveIntensity: 0.35,
+          metalness: 0.6,
+          roughness: 0.35,
+        })
+      );
       chassis.position.y = 0.4;
+      chassis.userData = { id: r.id };
       group.add(chassis);
 
-      // Edges on chassis
       const chEdges = new THREE.LineSegments(
         new THREE.EdgesGeometry(chassisGeo),
         new THREE.LineBasicMaterial({ color: r.color })
@@ -151,7 +158,6 @@ export const ThreeWarehouseMap = () => {
       chEdges.position.y = 0.4;
       group.add(chEdges);
 
-      // LIDAR cylinder
       const lidar = new THREE.Mesh(
         new THREE.CylinderGeometry(0.3, 0.3, 0.35, 24),
         new THREE.MeshStandardMaterial({
@@ -161,13 +167,13 @@ export const ThreeWarehouseMap = () => {
         })
       );
       lidar.position.y = 1.0;
+      lidar.userData = { id: r.id };
       group.add(lidar);
 
       scene.add(group);
-      robotMeshes.push({ group, id: r.id, color: r.color });
+      robotGroups.push(group);
     });
 
-    // Controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
@@ -176,43 +182,62 @@ export const ThreeWarehouseMap = () => {
     controls.maxDistance = 75;
     controls.target.set(0, 0, 0);
 
-    // HTML labels — project 3D positions to 2D
-    const updateLabels = () => {
-      const rect = mount.getBoundingClientRect();
-      const next = robotMeshes.map((r) => {
-        const vec = new THREE.Vector3();
-        r.group.getWorldPosition(vec);
-        vec.y += 2.2;
-        vec.project(camera);
-        const x = (vec.x * 0.5 + 0.5) * rect.width;
-        const y = (-vec.y * 0.5 + 0.5) * rect.height;
-        const visible = vec.z < 1;
-        return { id: r.id, color: r.color, x, y, visible };
-      });
-      setLabels(next);
+    // Raycasting — click detection on robots
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let downX = 0, downY = 0;
+    const onPointerDown = (e) => {
+      downX = e.clientX; downY = e.clientY;
     };
+    const onClick = (e) => {
+      // Ignore if pointer moved (drag/rotate), not a true click
+      if (Math.hypot(e.clientX - downX, e.clientY - downY) > 4) return;
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const intersects = raycaster.intersectObjects(robotGroups, true);
+      if (intersects.length) {
+        let obj = intersects[0].object;
+        while (obj && !obj.userData?.id) obj = obj.parent;
+        if (obj?.userData?.id && onRobotClick) {
+          onRobotClick(obj.userData.id);
+        }
+      }
+    };
+    // Hover → cursor pointer
+    const onPointerMove = (e) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hit = raycaster.intersectObjects(robotGroups, true);
+      renderer.domElement.style.cursor = hit.length ? "pointer" : "grab";
+    };
+
+    renderer.domElement.addEventListener("pointerdown", onPointerDown);
+    renderer.domElement.addEventListener("click", onClick);
+    renderer.domElement.addEventListener("pointermove", onPointerMove);
+    renderer.domElement.style.cursor = "grab";
 
     // Animation
     let rafId;
     let frame = 0;
     const tick = () => {
       controls.update();
-      // Subtle hover animation on rings — actually robots are static; just pulse ring opacity
       frame++;
-      robotMeshes.forEach((r, i) => {
-        const ring = r.group.children[0];
+      robotGroups.forEach((g, i) => {
+        const ring = g.children[0];
         if (ring && ring.material) {
           const t = (frame + i * 20) * 0.02;
           ring.material.opacity = 0.35 + Math.sin(t) * 0.12;
         }
       });
       renderer.render(scene, camera);
-      if (frame % 2 === 0) updateLabels();
       rafId = requestAnimationFrame(tick);
     };
     tick();
 
-    // Resize
     const handleResize = () => {
       const w = mount.clientWidth;
       const h = mount.clientHeight;
@@ -227,10 +252,11 @@ export const ThreeWarehouseMap = () => {
       cancelAnimationFrame(rafId);
       ro.disconnect();
       controls.dispose();
+      renderer.domElement.removeEventListener("pointerdown", onPointerDown);
+      renderer.domElement.removeEventListener("click", onClick);
+      renderer.domElement.removeEventListener("pointermove", onPointerMove);
       renderer.dispose();
-      if (mount.contains(renderer.domElement)) {
-        mount.removeChild(renderer.domElement);
-      }
+      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
       scene.traverse((obj) => {
         if (obj.geometry) obj.geometry.dispose?.();
         if (obj.material) {
@@ -239,84 +265,104 @@ export const ThreeWarehouseMap = () => {
         }
       });
     };
-  }, []);
+  }, [onRobotClick]);
 
   return (
     <div
-      data-testid="three-map"
-      className="relative w-full h-full rounded-2xl overflow-hidden border border-white/5 bg-[#08090C]"
+      data-testid="warehouse-map"
+      className="rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md overflow-hidden flex flex-col"
     >
-      {/* Top overlay */}
-      <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-        <div className="px-3 py-1.5 rounded-full border border-white/10 bg-black/60 backdrop-blur-md flex items-center gap-2">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C2FF] opacity-60" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00C2FF]" />
-          </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-200">
-            Live Fleet View
+      {/* Inline professional header bar */}
+      <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2 min-w-0">
+          <MapPinned className="h-4 w-4 text-[#00C2FF] shrink-0" strokeWidth={1.8} />
+          <h3 className="text-base font-extrabold text-white whitespace-nowrap">Warehouse Map</h3>
+          <span className="text-slate-700">·</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500 truncate">
+            Zone Alpha-West
           </span>
         </div>
-        <div className="px-3 py-1.5 rounded-full border border-white/10 bg-black/60 backdrop-blur-md font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">
-          Zone · Alpha-West
+
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <StatPill
+            dot="#94A3B8"
+            label={`${stats.total} robots`}
+            testid="stat-total"
+          />
+          <StatPill
+            dot="#00C2FF"
+            icon={<Activity className="h-3 w-3" strokeWidth={2} />}
+            label={`${stats.active} active`}
+            testid="stat-active"
+          />
+          <StatPill
+            dot="#F59E0B"
+            icon={<BatteryCharging className="h-3 w-3" strokeWidth={2} />}
+            label={`${stats.charging} charging`}
+            testid="stat-charging"
+          />
+          <StatPill
+            dot="#10B981"
+            icon={<ShieldCheck className="h-3 w-3" strokeWidth={2} />}
+            label="Nominal"
+            testid="stat-health"
+          />
+          <span className="mx-1 h-5 w-px bg-white/10 hidden md:inline-block" />
+          <MapBtn testid="map-layers"><Layers className="h-3.5 w-3.5" /></MapBtn>
+          <MapBtn testid="map-locate"><Locate className="h-3.5 w-3.5" /></MapBtn>
+          <MapBtn testid="map-fullscreen"><Maximize2 className="h-3.5 w-3.5" /></MapBtn>
         </div>
       </div>
 
-      {/* Top-right controls (below the fleet overlay position) */}
-      <div className="absolute top-4 right-[284px] z-10 flex items-center gap-2">
-        <MapBtn testid="map-layers"><Layers className="h-3.5 w-3.5" /></MapBtn>
-        <MapBtn testid="map-locate"><Locate className="h-3.5 w-3.5" /></MapBtn>
-        <MapBtn testid="map-fullscreen"><Maximize2 className="h-3.5 w-3.5" /></MapBtn>
-      </div>
+      {/* 3D canvas */}
+      <div className="relative">
+        <div ref={mountRef} className="w-full h-[380px] md:h-[420px]" />
 
-      {/* Fleet overlay */}
-      <FleetOverlay />
-
-      {/* Bottom legend */}
-      <div className="absolute bottom-4 left-4 z-10 flex items-center gap-3 px-3 py-2 rounded-xl border border-white/10 bg-black/60 backdrop-blur-md">
-        <Legend color="#00C2FF" label="Active" />
-        <Legend color="#F59E0B" label="Charging" />
-        <Legend color="#64748B" label="Idle" />
-        <Legend color="#EF4444" label="Fault" />
-      </div>
-
-      {/* 3D canvas mount */}
-      <div ref={mountRef} className="absolute inset-0" />
-
-      {/* Robot labels overlay */}
-      <div ref={labelsRef} className="absolute inset-0 pointer-events-none z-[5]">
-        {labels.map((l) =>
-          l.visible ? (
-            <div
-              key={l.id}
-              className="absolute -translate-x-1/2 -translate-y-1/2 px-2 py-0.5 rounded-md border border-white/15 bg-black/70 backdrop-blur-md font-mono text-[10px] tracking-wider whitespace-nowrap"
-              style={{ left: l.x, top: l.y, color: l.color }}
-            >
-              {l.id}
-            </div>
-          ) : null
-        )}
+        {/* Subtle footer legend + hint, inside the canvas bottom edge */}
+        <div className="absolute left-3 bottom-3 z-10 flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-white/10 bg-black/55 backdrop-blur-md">
+          <Legend color="#00C2FF" label="Active" />
+          <Legend color="#F59E0B" label="Charging" />
+          <Legend color="#64748B" label="Idle" />
+          <Legend color="#EF4444" label="Fault" />
+        </div>
+        <div className="absolute right-3 bottom-3 z-10 px-2.5 py-1.5 rounded-lg border border-white/10 bg-black/55 backdrop-blur-md font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
+          Click a robot for details
+        </div>
       </div>
     </div>
   );
 };
 
+const StatPill = ({ dot, label, icon, testid }) => (
+  <span
+    data-testid={testid}
+    className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full border border-white/10 bg-white/[0.02] font-mono text-[10px] uppercase tracking-wider text-slate-300"
+  >
+    <span
+      className="h-1.5 w-1.5 rounded-full"
+      style={{ background: dot, boxShadow: `0 0 6px ${dot}` }}
+    />
+    {icon}
+    <span>{label}</span>
+  </span>
+);
+
 const MapBtn = ({ children, testid }) => (
   <button
     data-testid={testid}
-    className="h-8 w-8 rounded-lg border border-white/10 bg-black/60 backdrop-blur-md flex items-center justify-center text-slate-300 hover:text-white hover:border-[#0066FF]/50 transition-all"
+    className="h-7 w-7 rounded-md border border-white/10 bg-white/[0.02] flex items-center justify-center text-slate-300 hover:text-white hover:border-[#0066FF]/50 transition-all"
   >
     {children}
   </button>
 );
 
 const Legend = ({ color, label }) => (
-  <div className="flex items-center gap-1.5">
+  <div className="flex items-center gap-1">
     <span
-      className="h-2 w-2 rounded-full"
-      style={{ background: color, boxShadow: `0 0 8px ${color}` }}
+      className="h-1.5 w-1.5 rounded-full"
+      style={{ background: color, boxShadow: `0 0 6px ${color}` }}
     />
-    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">
+    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-400">
       {label}
     </span>
   </div>

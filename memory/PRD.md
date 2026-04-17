@@ -75,3 +75,31 @@ Build a modern AMR web application dashboard inspired by a reference EV-Hub Drib
 **Current Files (post-iteration)**
 - Removed: FleetStatus.jsx, ChargingStations.jsx, TasksHistory.jsx
 - Added: FleetOverlay.jsx, MaintenanceSchedule.jsx, ShiftHandover.jsx, ActivityLog.jsx
+
+## Iteration 3 (2026-04-17)
+**User feedback addressed:**
+- Map reduced to ~420px, sits in a proper card with its own header (not "pasted on top")
+- **Removed** floating robot-list overlay entirely
+- **Added professional inline header bar** on the map card with chips: "8 Robots · 4 Active · 2 Charging · Nominal" + map controls (Layers/Locate/Fullscreen)
+- Subtle bottom-left legend and bottom-right hint "Click a robot for details"
+- **Robot click → RobotDrawer (Shadcn Sheet)** showing:
+  - Hero: name, fleet group, ID, model, status chip, battery/speed/zone metric chips
+  - Quick actions: Pause / Re-route / E-Stop
+  - Live Task section with progress bar
+  - Assignment grid (operator, route, uptime, waypoints)
+  - Maintenance History timeline (date, type, tech, notes)
+  - Safety-interlock + telemetry footer
+- Three.js raycasting implements click detection (ignores drag-rotate via 4-px threshold)
+- Cursor changes to pointer when hovering a robot
+- **Layout rearranged professionally:**
+  - Row 1: Map (7) | Task Scheduler (5)
+  - Row 2: Activity Log (7) | Live Activities (5)
+  - Row 3: Maintenance (7) | Alerts (5)
+  - Row 4: Shift Handover (full-width)
+
+**New mock data in mockData.js:**
+- ROBOT_MAINTENANCE_HISTORY (per-robot)
+- ROBOT_ASSIGNMENTS (operator, route, waypoints, fleetGroup)
+
+**Files added:** RobotDrawer.jsx
+**Files removed:** FleetOverlay.jsx

@@ -95,3 +95,49 @@ export const HANDOVER = [
   { id: "H-4", author: "T. Feld", time: "06:32", role: "Dispatch", note: "Queue trimmed — 14 tasks rolled into day shift. Prioritize Line-7 assembly feed." },
 ];
 
+// Maintenance history per robot (recent events for drawer)
+export const ROBOT_MAINTENANCE_HISTORY = {
+  "AMR-01": [
+    { date: "2026-04-10", type: "Battery Swap", tech: "R. Park", note: "Pack #A1 replaced · cycle 1042" },
+    { date: "2026-03-28", type: "Firmware Update", tech: "T. Feld", note: "v4.2.0 → v4.2.1" },
+    { date: "2026-03-12", type: "Wheel Alignment", tech: "R. Park", note: "Drift 0.3° corrected" },
+  ],
+  "AMR-02": [
+    { date: "2026-04-09", type: "LIDAR Clean", tech: "S. Ortega", note: "Sensor window degreased" },
+    { date: "2026-03-30", type: "Brake Service", tech: "R. Park", note: "Pad replacement" },
+  ],
+  "AMR-03": [
+    { date: "2026-04-14", type: "Battery Health Check", tech: "R. Park", note: "Capacity 92% of nominal" },
+    { date: "2026-03-22", type: "Firmware Update", tech: "T. Feld", note: "v4.2.1 rollout" },
+  ],
+  "AMR-04": [
+    { date: "2026-04-11", type: "Scheduled PM 250h", tech: "R. Park", note: "Gearbox oil, belts OK" },
+  ],
+  "AMR-05": [
+    { date: "2026-04-07", type: "Tire Replacement", tech: "R. Park", note: "All 4 drive wheels" },
+  ],
+  "AMR-06": [
+    { date: "2026-04-12", type: "Charger Re-seat", tech: "S. Ortega", note: "Contact resistance nominal" },
+  ],
+  "AMR-07": [
+    { date: "2026-04-08", type: "Camera Calibration", tech: "T. Feld", note: "Front stereo pair re-calibrated" },
+  ],
+  "AMR-08": [
+    { date: "2026-04-16", type: "Scheduled PM 500h", tech: "R. Park", note: "In progress — ETA tomorrow 12:00" },
+    { date: "2026-03-29", type: "E-Stop Test", tech: "S. Ortega", note: "Pass" },
+  ],
+};
+
+// Assignment / route info per robot
+export const ROBOT_ASSIGNMENTS = {
+  "AMR-01": { operator: "Day Ops · N. Hill", route: "Dock-A → Rack-03", waypoints: 3, fleetGroup: "Primary Tuggers" },
+  "AMR-02": { operator: "Day Ops · N. Hill", route: "Kitting-2 → Cell-08", waypoints: 4, fleetGroup: "Primary Tuggers" },
+  "AMR-03": { operator: "Dispatcher · T. Feld", route: "Dock-1 (charging)", waypoints: 0, fleetGroup: "Pickers" },
+  "AMR-04": { operator: "Day Ops · N. Hill", route: "Line-2 → QA-Lane", waypoints: 2, fleetGroup: "Pickers" },
+  "AMR-05": { operator: "Idle", route: "Parked Zone A-1", waypoints: 0, fleetGroup: "Lifters" },
+  "AMR-06": { operator: "Dispatcher · T. Feld", route: "Dock-2 (charging)", waypoints: 0, fleetGroup: "Lifters" },
+  "AMR-07": { operator: "Day Ops · N. Hill", route: "WH-B3 → Line-9", waypoints: 5, fleetGroup: "Flex AGVs" },
+  "AMR-08": { operator: "Maintenance · R. Park", route: "Bay-X · Service", waypoints: 0, fleetGroup: "Flex AGVs" },
+};
+
+
