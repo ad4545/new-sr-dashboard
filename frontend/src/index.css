@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Chivo:wght@400;500;600;700;800;900&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700;800;900&display=swap");
 
-/* Dashboard-scoped font: Nunito for everything inside .amr-dashboard */
+/* Dashboard-scoped font: Nunito for EVERYTHING inside .amr-dashboard (including former .font-mono) */
 .amr-dashboard,
 .amr-dashboard h1,
 .amr-dashboard h2,
@@ -14,18 +14,13 @@
 .amr-dashboard div,
 .amr-dashboard input,
 .amr-dashboard th,
-.amr-dashboard td {
-    font-family:
-        "Nunito",
-        system-ui,
-        sans-serif;
-}
-/* keep monospace where intentionally set */
+.amr-dashboard td,
 .amr-dashboard .font-mono,
 .amr-dashboard code {
     font-family:
-        "JetBrains Mono", source-code-pro, Menlo, Monaco, Consolas,
-        monospace !important;
+        "Nunito",
+        system-ui,
+        sans-serif !important;
 }
 
 @tailwind base;

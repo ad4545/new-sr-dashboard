@@ -103,3 +103,15 @@ Build a modern AMR web application dashboard inspired by a reference EV-Hub Drib
 
 **Files added:** RobotDrawer.jsx
 **Files removed:** FleetOverlay.jsx
+
+## Iteration 4 (2026-04-17)
+**User feedback addressed:**
+- Unified typography — Nunito applied to every element inside `.amr-dashboard` (including former font-mono IDs/labels). Base dashboard size bumped to 14px.
+- Sidebar redesigned as a **floating, collapsible pill** (margin all around, rounded-2xl, shadow). Edge-pill collapse toggle (ChevronLeft/Right). State persisted in localStorage. Collapsed width 76px (icon-only with hover tooltip), expanded 228px.
+- Main content responds to sidebar state via CSS custom selector `[data-collapsed]`.
+- **Removed Shift Handover widget.**
+- **New packed layout with gap-3:**
+  - Row 1: Warehouse Map (7) | Live Activities (5) — shows every running task with progress bars
+  - Row 2: Task Scheduler (7) | Activity Log (5)
+  - Row 3: Maintenance (7) | Alerts (5)
+- Mobile keeps hamburger overlay pattern unchanged.
