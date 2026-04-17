@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -11,6 +11,8 @@ import {
   BatteryCharging,
   ShieldCheck,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 
 const NAV = [
@@ -25,13 +27,34 @@ const NAV = [
 ];
 
 export const Sidebar = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
-    <aside
-      data-testid="app-sidebar"
-      className="fixed left-0 top-0 bottom-0 w-[260px] z-50 flex flex-col
-                 bg-black/40 backdrop-blur-2xl backdrop-saturate-150
-                 border-r border-white/10"
-    >
+    <>
+      {/* Mobile toggle */}
+      <button
+        data-testid="sidebar-mobile-toggle"
+        onClick={() => setMobileOpen((v) => !v)}
+        className="md:hidden fixed top-3 left-3 z-[60] h-10 w-10 rounded-lg border border-white/10 bg-black/70 backdrop-blur-xl flex items-center justify-center text-white"
+      >
+        {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+      </button>
+
+      {/* Backdrop on mobile */}
+      {mobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-[45] bg-black/60 backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <aside
+        data-testid="app-sidebar"
+        className={`fixed left-0 top-0 bottom-0 w-[260px] z-50 flex flex-col
+                   bg-black/40 backdrop-blur-2xl backdrop-saturate-150
+                   border-r border-white/10 transition-transform duration-300
+                   ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+      >
       {/* Logo */}
       <div className="px-6 pt-8 pb-10">
         <div className="flex items-center gap-3" data-testid="logo">
@@ -127,6 +150,7 @@ export const Sidebar = () => {
         </div>
       </div>
     </aside>
+    </>
   );
 };
 

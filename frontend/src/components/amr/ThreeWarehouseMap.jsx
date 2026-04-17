@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { ROBOT_POSITIONS, SHELVES } from "../../data/mockData";
 import { Maximize2, Layers, Locate } from "lucide-react";
+import FleetOverlay from "./FleetOverlay";
 
 // Vanilla three.js implementation to avoid JSX attribute injection from visual-edits plugin.
 export const ThreeWarehouseMap = () => {
@@ -261,12 +262,15 @@ export const ThreeWarehouseMap = () => {
         </div>
       </div>
 
-      {/* Top-right controls */}
-      <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-        <MapBtn testid="map-layers"><Layers className="h-4 w-4" /></MapBtn>
-        <MapBtn testid="map-locate"><Locate className="h-4 w-4" /></MapBtn>
-        <MapBtn testid="map-fullscreen"><Maximize2 className="h-4 w-4" /></MapBtn>
+      {/* Top-right controls (below the fleet overlay position) */}
+      <div className="absolute top-4 right-[284px] z-10 flex items-center gap-2">
+        <MapBtn testid="map-layers"><Layers className="h-3.5 w-3.5" /></MapBtn>
+        <MapBtn testid="map-locate"><Locate className="h-3.5 w-3.5" /></MapBtn>
+        <MapBtn testid="map-fullscreen"><Maximize2 className="h-3.5 w-3.5" /></MapBtn>
       </div>
+
+      {/* Fleet overlay */}
+      <FleetOverlay />
 
       {/* Bottom legend */}
       <div className="absolute bottom-4 left-4 z-10 flex items-center gap-3 px-3 py-2 rounded-xl border border-white/10 bg-black/60 backdrop-blur-md">
@@ -300,7 +304,7 @@ export const ThreeWarehouseMap = () => {
 const MapBtn = ({ children, testid }) => (
   <button
     data-testid={testid}
-    className="h-9 w-9 rounded-lg border border-white/10 bg-black/60 backdrop-blur-md flex items-center justify-center text-slate-300 hover:text-white hover:border-[#0066FF]/50 transition-all"
+    className="h-8 w-8 rounded-lg border border-white/10 bg-black/60 backdrop-blur-md flex items-center justify-center text-slate-300 hover:text-white hover:border-[#0066FF]/50 transition-all"
   >
     {children}
   </button>

@@ -59,3 +59,19 @@ Build a modern AMR web application dashboard inspired by a reference EV-Hub Drib
 1. Decide which deferred page(s) to build first (Fleet detail or Tasks full page are highest-value)
 2. Optionally wire a lightweight WebSocket backend to animate robots
 3. Add interactive click-to-focus on robots from the 3D map
+
+## Iteration 2 (2026-04-17)
+**User feedback addressed:**
+- Nunito font for all dashboard content (scoped via `.amr-dashboard` class)
+- Tighter 5/7-column reference-style layout; smaller card sizes; no huge widgets
+- **Real HTML5 drag-and-drop** on Task Scheduler (verified via Playwright — TSK-2051 moved to position 4)
+- **Removed** Charging Docks widget
+- **Removed** Fleet Status as a standalone widget — now a floating overlay on the 3D map showing ~2-3 robots with speed (m/s), battery %, status; rest scrolls within the overlay
+- **Added** Maintenance Schedule widget (upcoming service, severity badges DUE/SOON/PLAN)
+- **Added** Shift Handover widget (full-width, signed log entries from Ops/Safety/Maintenance/Dispatch roles)
+- **Replaced** Task History with a richer Activity Log — click any entry to expand to a 6-cell detail grid (Origin/Destination/Payload/Avg Speed/Distance/Waypoints), styled like the reference Drive Details activity log
+- **Responsive**: mobile hamburger sidebar + stack, tablet (single column + hidden clock/search), laptop/desktop (5/7 split)
+
+**Current Files (post-iteration)**
+- Removed: FleetStatus.jsx, ChargingStations.jsx, TasksHistory.jsx
+- Added: FleetOverlay.jsx, MaintenanceSchedule.jsx, ShiftHandover.jsx, ActivityLog.jsx

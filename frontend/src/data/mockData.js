@@ -2,14 +2,14 @@
 // Warehouse & manufacturing hybrid environment
 
 export const FLEET = [
-  { id: "AMR-01", name: "Atlas-01", model: "HX-500 Tugger", battery: 92, status: "active", currentTask: "TSK-2041", zone: "A-4", uptime: "14h 22m" },
-  { id: "AMR-02", name: "Atlas-02", model: "HX-500 Tugger", battery: 64, status: "active", currentTask: "TSK-2042", zone: "B-2", uptime: "11h 03m" },
-  { id: "AMR-03", name: "Nova-03", model: "PK-200 Picker", battery: 38, status: "charging", currentTask: null, zone: "DOCK-1", uptime: "08h 47m" },
-  { id: "AMR-04", name: "Nova-04", model: "PK-200 Picker", battery: 81, status: "active", currentTask: "TSK-2045", zone: "C-1", uptime: "09h 15m" },
-  { id: "AMR-05", name: "Orbit-05", model: "LF-1000 Lifter", battery: 56, status: "idle", currentTask: null, zone: "A-1", uptime: "06h 10m" },
-  { id: "AMR-06", name: "Orbit-06", model: "LF-1000 Lifter", battery: 22, status: "charging", currentTask: null, zone: "DOCK-2", uptime: "02h 41m" },
-  { id: "AMR-07", name: "Kite-07", model: "AGV-Flex", battery: 77, status: "active", currentTask: "TSK-2048", zone: "D-3", uptime: "13h 00m" },
-  { id: "AMR-08", name: "Kite-08", model: "AGV-Flex", battery: 45, status: "maintenance", currentTask: null, zone: "BAY-X", uptime: "00h 00m" },
+  { id: "AMR-01", name: "Atlas-01", model: "HX-500 Tugger", battery: 92, status: "active", currentTask: "TSK-2041", zone: "A-4", uptime: "14h 22m", speed: 1.4, heading: 45 },
+  { id: "AMR-02", name: "Atlas-02", model: "HX-500 Tugger", battery: 64, status: "active", currentTask: "TSK-2042", zone: "B-2", uptime: "11h 03m", speed: 0.9, heading: 180 },
+  { id: "AMR-03", name: "Nova-03", model: "PK-200 Picker", battery: 38, status: "charging", currentTask: null, zone: "DOCK-1", uptime: "08h 47m", speed: 0, heading: 0 },
+  { id: "AMR-04", name: "Nova-04", model: "PK-200 Picker", battery: 81, status: "active", currentTask: "TSK-2045", zone: "C-1", uptime: "09h 15m", speed: 1.2, heading: 270 },
+  { id: "AMR-05", name: "Orbit-05", model: "LF-1000 Lifter", battery: 56, status: "idle", currentTask: null, zone: "A-1", uptime: "06h 10m", speed: 0, heading: 90 },
+  { id: "AMR-06", name: "Orbit-06", model: "LF-1000 Lifter", battery: 22, status: "charging", currentTask: null, zone: "DOCK-2", uptime: "02h 41m", speed: 0, heading: 0 },
+  { id: "AMR-07", name: "Kite-07", model: "AGV-Flex", battery: 77, status: "active", currentTask: "TSK-2048", zone: "D-3", uptime: "13h 00m", speed: 1.6, heading: 315 },
+  { id: "AMR-08", name: "Kite-08", model: "AGV-Flex", battery: 45, status: "maintenance", currentTask: null, zone: "BAY-X", uptime: "00h 00m", speed: 0, heading: 0 },
 ];
 
 export const SCHEDULED_TASKS = [
@@ -77,3 +77,21 @@ export const SHELVES = [
   [10, -14, 2, 8],  [14, -14, 2, 8],  [18, -14, 2, 8],  [22, -14, 2, 8],
   [10, 0, 2, 8],    [14, 0, 2, 8],    [18, 0, 2, 8],    [22, 0, 2, 8],
 ];
+
+// Maintenance schedule upcoming service entries
+export const MAINTENANCE = [
+  { id: "M-001", robot: "Kite-08", type: "Scheduled Service", due: "Tomorrow · 08:00", severity: "due", detail: "500h PM · gearbox inspection" },
+  { id: "M-002", robot: "Nova-03", type: "Wheel Alignment", due: "In 2 days · 10:30", severity: "upcoming", detail: "Re-calibrate drive wheels" },
+  { id: "M-003", robot: "Atlas-02", type: "Battery Health Check", due: "In 4 days", severity: "upcoming", detail: "Cycle count nearing threshold" },
+  { id: "M-004", robot: "Orbit-05", type: "Firmware Rollout", due: "This Friday · 22:00", severity: "planned", detail: "v4.2.2 rolling update" },
+  { id: "M-005", robot: "Kite-07", type: "LIDAR Re-calibration", due: "Next Monday", severity: "planned", detail: "Sensor drift > 0.4°" },
+];
+
+// Shift handover log entries
+export const HANDOVER = [
+  { id: "H-1", author: "N. Hill", time: "06:55", role: "Ops Lead", note: "Night shift finished all priority transports. Lane B-2 cleared. AMR-02 flagged for obstruction false-positive — review at 09:00." },
+  { id: "H-2", author: "S. Ortega", time: "06:48", role: "Safety", note: "E-stop at Cell-07 resolved, operator re-trained. All perimeter sensors green." },
+  { id: "H-3", author: "R. Park", time: "06:40", role: "Maintenance", note: "Kite-08 pulled for PM. Parts ready. ETA return to fleet 12:00 tomorrow." },
+  { id: "H-4", author: "T. Feld", time: "06:32", role: "Dispatch", note: "Queue trimmed — 14 tasks rolled into day shift. Prioritize Line-7 assembly feed." },
+];
+
