@@ -34,7 +34,7 @@ export const ActivityLog = () => {
   return (
     <div
       data-testid="activity-log"
-      className="h-full rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md p-5 flex flex-col"
+      className="h-full rounded-2xl border border-white/10 bg-[#0E0F13]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)] p-5 flex flex-col"
     >
       <div className="flex items-center justify-between mb-4">
         <div>

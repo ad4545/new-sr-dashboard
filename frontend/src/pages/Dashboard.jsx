@@ -67,9 +67,9 @@ export default function Dashboard() {
 
         <TopHeader breadcrumb={["Pages", "Dashboard"]} title="Fleet Operations" />
 
-        <div className="px-[6px] md:px-[8px] pb-2 flex-1">
+        <div className="px-[10px] md:px-[12px] pb-3 flex-1">
           {/* Row 1: Map (7) | Live Activities (5) */}
-          <div className="grid grid-cols-12 gap-[5px] mb-[5px] h-[520px]">
+          <div className="grid grid-cols-12 gap-[10px] mb-[10px] h-[520px]">
             <div className="col-span-12 xl:col-span-7">
               <ThreeWarehouseMap onRobotClick={handleRobotClick} />
             </div>
@@ -79,7 +79,7 @@ export default function Dashboard() {
           </div>
 
           {/* Row 2: Task Scheduler (7) | Activity Log (5) */}
-          <div className="grid grid-cols-12 gap-[5px] mb-[5px] h-[480px]">
+          <div className="grid grid-cols-12 gap-[10px] mb-[10px] h-[480px]">
             <div className="col-span-12 xl:col-span-7">
               <TasksScheduler />
             </div>
@@ -89,7 +89,7 @@ export default function Dashboard() {
           </div>
 
           {/* Row 3: Maintenance (7) | Alerts (5) */}
-          <div className="grid grid-cols-12 gap-[5px] mb-[5px] h-[420px]">
+          <div className="grid grid-cols-12 gap-[10px] mb-[10px] h-[420px]">
             <div className="col-span-12 xl:col-span-7">
               <MaintenanceSchedule />
             </div>

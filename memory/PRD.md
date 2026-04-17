@@ -129,3 +129,9 @@ Build a modern AMR web application dashboard inspired by a reference EV-Hub Drib
   - All widget roots `h-full` + scroll areas `flex-1 min-h-0 overflow-y-auto`
 - **Glassier sidebar** — bg-white/[0.04] + backdrop-blur-[28px] + backdrop-saturate-200, border-white/15, inner blue/cyan glow blobs, shadow with blue tint
 - Base font 15 → 16 px, widget titles 20 → 22 px, scheduler row text 14 → 15 px
+
+## Iteration 7 (2026-04-17)
+- Increased inter-widget gap from 5 px to 10 px (still small but clearly separated — no overlap appearance)
+- Main content horizontal padding increased to 10-12 px
+- Widget borders strengthened: border-white/5 → border-white/10; card bg opacity 80 → 85
+- Added subtle shadow `shadow-[0_4px_24px_rgba(0,0,0,0.4)]` on every widget card to give each a distinct floating feel
