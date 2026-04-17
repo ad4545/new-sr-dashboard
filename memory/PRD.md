@@ -120,3 +120,12 @@ Build a modern AMR web application dashboard inspired by a reference EV-Hub Drib
 - Reduced inter-widget gap to 5px (gap-[5px] mb-[5px]) and trimmed main padding to 6-8px
 - Sidebar now at left-5 (20px) with 30px gap before main content for more breathing room
 - Font sizes bumped: dashboard base 14px → 15px; widget titles text-lg → text-xl (20px); page title up to 34px on xl; scheduler rows bumped one step
+
+## Iteration 6 (2026-04-17)
+- **Fixed row heights** so widgets always fill full row area without dead space:
+  - Row 1 = 520 px (Map | Live Activities)
+  - Row 2 = 480 px (Task Scheduler | Activity Log)
+  - Row 3 = 420 px (Maintenance | Alerts)
+  - All widget roots `h-full` + scroll areas `flex-1 min-h-0 overflow-y-auto`
+- **Glassier sidebar** — bg-white/[0.04] + backdrop-blur-[28px] + backdrop-saturate-200, border-white/15, inner blue/cyan glow blobs, shadow with blue tint
+- Base font 15 → 16 px, widget titles 20 → 22 px, scheduler row text 14 → 15 px

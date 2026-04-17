@@ -6,7 +6,7 @@ export const LiveActivities = () => {
   return (
     <div
       data-testid="live-activities"
-      className="rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md p-5 flex flex-col"
+      className="h-full rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md p-5 flex flex-col"
     >
       <div className="flex items-center justify-between mb-3">
         <div>
@@ -17,13 +17,13 @@ export const LiveActivities = () => {
             </span>
             {LIVE_TASKS.length} running
           </div>
-          <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
+          <h3 className="text-[22px] font-extrabold text-white flex items-center gap-2">
             <Activity className="h-[18px] w-[18px] text-[#00C2FF]" strokeWidth={1.8} /> Live Activities
           </h3>
         </div>
       </div>
 
-      <div className="space-y-2 max-h-[260px] overflow-y-auto pr-1 amr-scroll">
+      <div className="space-y-2 flex-1 min-h-0 overflow-y-auto pr-1 amr-scroll">
         {LIVE_TASKS.map((t) => (
           <div
             key={t.id}

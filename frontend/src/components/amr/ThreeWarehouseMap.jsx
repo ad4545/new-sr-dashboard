@@ -270,13 +270,13 @@ export const ThreeWarehouseMap = ({ onRobotClick }) => {
   return (
     <div
       data-testid="warehouse-map"
-      className="rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md overflow-hidden flex flex-col"
+      className="h-full rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md overflow-hidden flex flex-col"
     >
       {/* Inline professional header bar */}
       <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2 min-w-0">
           <MapPinned className="h-4 w-4 text-[#00C2FF] shrink-0" strokeWidth={1.8} />
-          <h3 className="text-xl font-extrabold text-white whitespace-nowrap">Warehouse Map</h3>
+          <h3 className="text-[22px] font-extrabold text-white whitespace-nowrap">Warehouse Map</h3>
           <span className="text-slate-700">·</span>
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500 truncate">
             Zone Alpha-West
@@ -315,8 +315,8 @@ export const ThreeWarehouseMap = ({ onRobotClick }) => {
       </div>
 
       {/* 3D canvas */}
-      <div className="relative">
-        <div ref={mountRef} className="w-full h-[380px] md:h-[420px]" />
+      <div className="relative flex-1 min-h-[380px]">
+        <div ref={mountRef} className="absolute inset-0" />
 
         {/* Subtle footer legend + hint, inside the canvas bottom edge */}
         <div className="absolute left-3 bottom-3 z-10 flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-white/10 bg-black/55 backdrop-blur-md">

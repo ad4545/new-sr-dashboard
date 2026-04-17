@@ -59,14 +59,14 @@ export const TasksScheduler = () => {
   return (
     <div
       data-testid="tasks-scheduler"
-      className="rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md p-5 flex flex-col"
+      className="h-full rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md p-5 flex flex-col"
     >
       <div className="flex items-center justify-between mb-4">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500 mb-0.5">
             Queue · drag to reorder
           </div>
-          <h3 className="text-xl font-extrabold text-white">Task Scheduler</h3>
+          <h3 className="text-[22px] font-extrabold text-white">Task Scheduler</h3>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -84,7 +84,7 @@ export const TasksScheduler = () => {
         </div>
       </div>
 
-      <div className="space-y-1.5 max-h-[340px] overflow-y-auto pr-1 amr-scroll">
+      <div className="space-y-1.5 flex-1 min-h-0 overflow-y-auto pr-1 amr-scroll">
         {tasks.map((t, i) => {
           const p = priorityMap[t.priority];
           const showTopIndicator = hoverIndex === i && dragIndex !== null && dragIndex !== i;
@@ -111,8 +111,8 @@ export const TasksScheduler = () => {
                 />
                 <div className="font-mono text-[12px] text-[#00C2FF] w-16 shrink-0">{t.id}</div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-semibold text-white truncate leading-tight">{t.type}</div>
-                  <div className="font-mono text-[11px] text-slate-500 truncate">
+                  <div className="text-[15px] font-semibold text-white truncate leading-tight">{t.type}</div>
+                  <div className="font-mono text-[12px] text-slate-500 truncate">
                     {t.origin} <span className="text-slate-700">→</span> {t.destination}
                   </div>
                 </div>

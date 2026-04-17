@@ -34,14 +34,14 @@ export const ActivityLog = () => {
   return (
     <div
       data-testid="activity-log"
-      className="rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md p-5 flex flex-col"
+      className="h-full rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md p-5 flex flex-col"
     >
       <div className="flex items-center justify-between mb-4">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500 mb-0.5">
             Last shift · {TASK_HISTORY.length} entries
           </div>
-          <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
+          <h3 className="text-[22px] font-extrabold text-white flex items-center gap-2">
             <History className="h-[18px] w-[18px] text-[#00C2FF]" strokeWidth={1.8} /> Activity Log
           </h3>
         </div>
@@ -54,7 +54,7 @@ export const ActivityLog = () => {
       </div>
 
       {/* Vertical timeline list */}
-      <div className="relative max-h-[460px] overflow-y-auto amr-scroll pl-4 pr-1">
+      <div className="relative flex-1 min-h-0 overflow-y-auto amr-scroll pl-4 pr-1">
         <span className="absolute left-[7px] top-1 bottom-1 w-[1px] bg-white/5" />
         {TASK_HISTORY.map((h, i) => {
           const s = statusMap[h.status];

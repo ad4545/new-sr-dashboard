@@ -64,13 +64,19 @@ export const Sidebar = ({ collapsed, onCollapseChange }) => {
       <aside
         data-testid="app-sidebar"
         className={`fixed left-5 top-5 bottom-5 z-[60] flex flex-col
-                    rounded-2xl border border-white/10
-                    bg-black/55 backdrop-blur-2xl backdrop-saturate-150
-                    shadow-[0_20px_60px_rgba(0,0,0,0.5)]
+                    rounded-2xl border border-white/15
+                    bg-white/[0.04] backdrop-blur-[28px] backdrop-saturate-200
+                    shadow-[0_30px_60px_-20px_rgba(0,102,255,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]
                     transition-all duration-300
+                    overflow-hidden
                     ${mobileOpen ? "translate-x-0" : "-translate-x-[140%] md:translate-x-0"}`}
         style={{ width }}
       >
+        {/* Soft inner glow tints */}
+        <div className="pointer-events-none absolute inset-0 rounded-2xl">
+          <div className="absolute -top-16 left-1/2 -translate-x-1/2 h-40 w-40 rounded-full bg-[#0066FF]/35 blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-24 w-24 rounded-full bg-[#00C2FF]/20 blur-3xl" />
+        </div>
         {/* Collapse toggle — floating pill on right edge */}
         <button
           data-testid="sidebar-collapse-toggle"
