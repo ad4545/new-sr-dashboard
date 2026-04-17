@@ -1,0 +1,184 @@
+{
+  "theme": "dark",
+  "archetype": "Swiss & High-Contrast (Dark Technical Variant)",
+  "colors": {
+    "background": {
+      "base": "#0A0A0B",
+      "card": "#131418",
+      "glass": "rgba(19, 20, 24, 0.6)",
+      "sidebar": "rgba(10, 10, 11, 0.4)"
+    },
+    "border": {
+      "default": "rgba(255, 255, 255, 0.05)",
+      "active": "rgba(0, 102, 255, 0.5)"
+    },
+    "text": {
+      "primary": "#F8FAFC",
+      "secondary": "#94A3B8",
+      "muted": "#475569"
+    },
+    "primary": {
+      "default": "#0066FF",
+      "hover": "#3385FF",
+      "glow": "rgba(0, 102, 255, 0.15)"
+    },
+    "accent": {
+      "cyan": "#00C2FF",
+      "green": "#10B981",
+      "amber": "#F59E0B",
+      "red": "#EF4444"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "heading": "Chivo, sans-serif",
+      "body": "IBM Plex Sans, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scales": {
+      "h1": "text-4xl font-bold tracking-tight text-white",
+      "h2": "text-2xl font-bold tracking-tight text-white",
+      "h3": "text-xl font-semibold tracking-tight text-white",
+      "h4": "text-lg font-medium text-white",
+      "body": "text-base text-slate-300 leading-relaxed",
+      "small": "text-sm text-slate-400",
+      "label": "text-xs font-mono uppercase tracking-widest text-slate-500"
+    }
+  },
+  "layout": {
+    "structure": "Fixed left glassy sidebar (~260px) + Top sticky header + Main content area with responsive bento-style CSS grid.",
+    "spacing": {
+      "section_gap": "gap-6 md:gap-8",
+      "card_padding": "p-6",
+      "grid_cols": "grid-cols-1 md:grid-cols-8 lg:grid-cols-12"
+    },
+    "components": {
+      "sidebar": "fixed left-0 top-0 bottom-0 w-[260px] bg-black/40 backdrop-blur-xl border-r border-white/5 z-50 flex flex-col",
+      "header": "sticky top-0 h-16 w-full bg-[#0A0A0B]/80 backdrop-blur-md border-b border-white/5 z-40 flex items-center justify-between px-8",
+      "main_wrapper": "ml-[260px] min-h-screen bg-[#0A0A0B] flex flex-col relative",
+      "content_area": "p-8 flex-1 w-full"
+    }
+  },
+  "surface_strategies": {
+    "cards": {
+      "background": "bg-[#131418]/80 backdrop-blur-md",
+      "border": "border border-white/5",
+      "radius": "rounded-2xl",
+      "shadow": "shadow-xl shadow-black/50"
+    },
+    "glassmorphism": {
+      "sidebar": "backdrop-blur-2xl bg-black/40 border-r border-white/10 backdrop-saturate-150",
+      "header": "backdrop-blur-xl bg-[#0A0A0B]/60 border-b border-white/5"
+    }
+  },
+  "micro_interactions": {
+    "buttons": "hover:bg-blue-600 active:scale-95 transition-all duration-200",
+    "cards": "hover:-translate-y-0.5 hover:border-blue-500/30 hover:shadow-[0_0_20px_rgba(0,102,255,0.1)] transition-all duration-300",
+    "links": "hover:text-blue-400 transition-colors duration-200"
+  },
+  "components_specs": {
+    "tasks_scheduler": {
+      "description": "List of upcoming tasks with a drag-drop feel.",
+      "visuals": "List items with a left drag-handle icon. Columns for Task ID (mono font), Type, Priority (pill badges), and Status. Left-aligned text.",
+      "interaction": "Hover highlights the row with a very subtle blue gradient background (bg-gradient-to-r from-blue-500/10 to-transparent)."
+    },
+    "live_activities": {
+      "description": "Active tasks showing progress.",
+      "visuals": "Card containing a list. Each item has a progress bar (bg-blue-600, h-2, rounded-full), Task Name, Assigned Robot ID, and percentage text.",
+      "layout": "Dense spacing (gap-4) to fit multiple active tasks."
+    },
+    "threejs_map": {
+      "description": "3D Warehouse Map with static robots.",
+      "visuals": "Dark theme scene. Background: #0A0A0B. Floor: GridHelper (color: #222222). Robots: Box geometries with neon blue edges/emissive glow. Obstacles: Dark grey wireframes.",
+      "layout": "col-span-full xl:col-span-8 row-span-2 min-h-[400px] rounded-2xl overflow-hidden relative border border-white/5",
+      "controls": "OrbitControls enabled for panning/zooming. Overlay text indicating 'Live Fleet View'."
+    },
+    "fleet_status": {
+      "description": "Overview of robot fleet.",
+      "visuals": "List of robots. Each row has Robot Name, Battery (progress bar with color based on level: green/amber/red), Status (pill badge: Active, Idle, Charging).",
+      "layout": "col-span-full md:col-span-4 lg:col-span-4 row-span-2"
+    },
+    "tasks_history": {
+      "description": "Table of past tasks.",
+      "visuals": "Simple table format. Headings are uppercase, small tracking-widest text. Rows have subtle bottom borders (border-white/5). No pagination for now, just a scrollable list."
+    },
+    "notifications_alerts": {
+      "description": "Panel for system alerts.",
+      "visuals": "List of alerts. Icons to indicate severity (red triangle for alert, blue info circle for info). Small 'Dismiss' pill buttons on hover."
+    },
+    "charging_stations": {
+      "description": "Status of charging points.",
+      "visuals": "Small grid of square/rectangular tiles representing stations. Glowing green dot for 'Available', pulsing blue for 'Charging', grey for 'Offline'."
+    }
+  },
+  "iconography": {
+    "library": "lucide-react",
+    "rules": "Use stroke-width 1.5. No emojis. Use precise icons: LayoutDashboard, ListTodo, Map, History, Bell, Settings, Battery, Zap, Bot, GripVertical (for drag handles)."
+  },
+  "three_js_specs": {
+    "scene": {
+      "background": "#0A0A0B",
+      "fog": {
+        "color": "#0A0A0B",
+        "near": 10,
+        "far": 100
+      }
+    },
+    "lighting": {
+      "ambient": {
+        "color": "#ffffff",
+        "intensity": 0.2
+      },
+      "directional": {
+        "color": "#ffffff",
+        "intensity": 0.5,
+        "position": [10, 20, 10]
+      }
+    },
+    "materials": {
+      "robot": {
+        "color": "#15161A",
+        "emissive": "#00C2FF",
+        "emissiveIntensity": 0.8
+      },
+      "obstacle": {
+        "color": "#222222",
+        "wireframe": true
+      },
+      "floor": {
+        "gridColor": "#222222",
+        "size": 100,
+        "divisions": 50
+      }
+    }
+  },
+  "media": {
+    "image_urls": [
+      {
+        "url": "https://images.unsplash.com/photo-1771011726574-60ab6028724a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzB8MHwxfHNlYXJjaHwyfHxkYXJrJTIwYmx1ZSUyMHRlY2hub2xvZ3klMjB0ZXh0dXJlfGVufDB8fHx8MTc3NjQwNTAwNHww&ixlib=rb-4.1.0&q=85",
+        "category": "background_texture",
+        "description": "Dark blue grid with vertical lines for empty state backgrounds or map container underlay."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1739054730201-4b6463484e3c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzB8MHwxfHNlYXJjaHwxfHxkYXJrJTIwYmx1ZSUyMHRlY2hub2xvZ3klMjB0ZXh0dXJlfGVufDB8fHx8MTc3NjQwNTAwNHww&ixlib=rb-4.1.0&q=85",
+        "category": "header_accent",
+        "description": "Blue and black abstract background to be used with high opacity mask for header or active card accents."
+      },
+      {
+        "url": "https://images.pexels.com/photos/236705/pexels-photo-236705.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "dashboard_hero_bg",
+        "description": "Expansive industrial warehouse interior, used with a heavy black/blue gradient overlay (bg-black/80) for the top hero section of the dashboard."
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Use raw HTML/Tailwind for layout wrappers to ensure precise glassy bento-grid matching the specifications.",
+    "Use Shadcn UI for interactive components (dropdowns, dialogs, progress bars, tables) but deeply customize the borders and backgrounds to match the #131418 card background and border-white/5 spec.",
+    "Do NOT include any generic charts/metrics (no Recharts). The user explicitly requested NO stats or metrics.",
+    "Implement the left sidebar exactly 260px wide, fixed, with a glassy blur. The main content must have ml-[260px] to prevent overlap.",
+    "Implement the top header with a breadcrumb 'Pages / Dashboard'.",
+    "Use @react-three/fiber and @react-three/drei for the 3D map. Keep it simple: GridHelper for the floor, dark wireframe boxes for warehouse shelves, and glowing blue boxes/cylinders for robots. The robots should just be static meshes spread out over the grid.",
+    "Ensure all fonts (Chivo, IBM Plex Sans, JetBrains Mono) are imported from Google Fonts in the main index.html/css.",
+    "Add 'data-testid' to all interactive elements to support automated testing."
+  ]
+}
