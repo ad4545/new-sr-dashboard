@@ -1,6 +1,7 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "@/pages/Dashboard";
+import { Toaster } from "@/components/ui/sonner";
 
 function App() {
   return (
@@ -17,6 +18,18 @@ function App() {
           <Route path="/safety" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
+      <Toaster
+        position="top-right"
+        theme="dark"
+        toastOptions={{
+          style: {
+            background: "#0E0F13",
+            border: "1px solid rgba(0,102,255,0.3)",
+            color: "#F8FAFC",
+            fontFamily: "Nunito, sans-serif",
+          },
+        }}
+      />
     </div>
   );
 }

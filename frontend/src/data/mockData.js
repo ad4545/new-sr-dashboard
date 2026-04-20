@@ -95,6 +95,43 @@ export const HANDOVER = [
   { id: "H-4", author: "T. Feld", time: "06:32", role: "Dispatch", note: "Queue trimmed — 14 tasks rolled into day shift. Prioritize Line-7 assembly feed." },
 ];
 
+export const PATHS = [
+  { id: "PTH-001", name: "Dock-A → Rack-12", distance: "38 m", waypoints: 4, zone: "A" },
+  { id: "PTH-002", name: "Kitting-1 → Cell-11", distance: "52 m", waypoints: 5, zone: "B" },
+  { id: "PTH-003", name: "Line-2 → QA-Lane", distance: "24 m", waypoints: 3, zone: "C" },
+  { id: "PTH-004", name: "WH-B3 → Line-9", distance: "66 m", waypoints: 6, zone: "D" },
+  { id: "PTH-005", name: "Inbound-2 → Rack-8", distance: "42 m", waypoints: 4, zone: "A" },
+  { id: "PTH-006", name: "Cell-07 → Dock-B", distance: "30 m", waypoints: 3, zone: "C" },
+  { id: "PTH-007", name: "Kitting-2 → Cell-08", distance: "48 m", waypoints: 5, zone: "B" },
+];
+
+export const POSES = [
+  { id: "POSE-A1", name: "P_LOAD_DOCK_A", x: -24.3, y: 0, yaw: 0, zone: "A" },
+  { id: "POSE-A2", name: "P_UNLOAD_RACK_12", x: 12.1, y: -8.4, yaw: 90, zone: "A" },
+  { id: "POSE-B1", name: "P_PICK_STATION_3", x: -4.0, y: 6.2, yaw: 180, zone: "B" },
+  { id: "POSE-B2", name: "P_QA_INSPECT", x: 14.5, y: 4.1, yaw: 270, zone: "B" },
+  { id: "POSE-C1", name: "P_LINE_7_DROP", x: 18.8, y: -14.0, yaw: 0, zone: "C" },
+  { id: "POSE-D1", name: "P_DOCK_CHARGE_1", x: -26.0, y: 20.0, yaw: 180, zone: "D" },
+  { id: "POSE-D2", name: "P_DOCK_CHARGE_2", x: 22.0, y: 20.0, yaw: 180, zone: "D" },
+  { id: "POSE-H1", name: "P_HOME_BASE", x: 0, y: 0, yaw: 0, zone: "H" },
+];
+
+export const TASK_TYPES = [
+  "Pallet Transport",
+  "Bin Pickup",
+  "Assembly Feed",
+  "Kit Delivery",
+  "Empty Return",
+  "Inspection Run",
+];
+
+export const PRIORITIES = [
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
+  { value: "critical", label: "Critical" },
+];
+
 // Maintenance history per robot (recent events for drawer)
 export const ROBOT_MAINTENANCE_HISTORY = {
   "AMR-01": [

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { GripVertical, Plus, Filter } from "lucide-react";
 import { SCHEDULED_TASKS } from "../../data/mockData";
+import TaskCreateDrawer from "./TaskCreateDrawer";
 
 const priorityMap = {
   high: { dot: "#EF4444", label: "HIGH", style: "text-[#FCA5A5] bg-[#EF4444]/10 border-[#EF4444]/25" },
@@ -12,6 +13,7 @@ export const TasksScheduler = () => {
   const [tasks, setTasks] = useState(SCHEDULED_TASKS);
   const [dragIndex, setDragIndex] = useState(null);
   const [hoverIndex, setHoverIndex] = useState(null);
+  const [createOpen, setCreateOpen] = useState(false);
   const dragNode = useRef(null);
 
   const handleDragStart = (e, index) => {
@@ -77,6 +79,7 @@ export const TasksScheduler = () => {
           </button>
           <button
             data-testid="new-task-btn"
+            onClick={() => setCreateOpen(true)}
             className="h-8 px-3 rounded-lg bg-[#0066FF] text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-[#3385FF] active:scale-95 transition-all shadow-[0_0_20px_rgba(0,102,255,0.35)]"
           >
             <Plus className="h-3.5 w-3.5" /> New
@@ -129,6 +132,8 @@ export const TasksScheduler = () => {
           );
         })}
       </div>
+
+      <TaskCreateDrawer open={createOpen} onOpenChange={setCreateOpen} />
     </div>
   );
 };

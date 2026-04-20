@@ -135,3 +135,20 @@ Build a modern AMR web application dashboard inspired by a reference EV-Hub Drib
 - Main content horizontal padding increased to 10-12 px
 - Widget borders strengthened: border-white/5 → border-white/10; card bg opacity 80 → 85
 - Added subtle shadow `shadow-[0_4px_24px_rgba(0,0,0,0.4)]` on every widget card to give each a distinct floating feel
+
+## Iteration 8 (2026-04-20)
+Task creation composer — industrial AMR mission builder:
+- Right-side Sheet drawer ("Create Task") opens from the "+ New" button
+- Top fields: Task name (required), Type, Priority (low/medium/high/critical), Assign Robot (auto or specific)
+- **Composable step cards** — drag-drop reorderable; three step kinds:
+  - **Move**: PATH/POSE segmented toggle + Shadcn Select for predefined paths (7) or poses (8)
+  - **Wait**: dwell-time stepper (+/-) with 5s/10s/30s/60s quick presets
+  - **Return**: simple "robot returns to home dock" card
+- Each card: numbered badge, accent colour, grip handle, delete button
+- "+ Move / + Wait / + Return" add-step buttons at bottom of step list
+- Footer: Cancel (ghost) / Save (outlined, requires name + 1 step) / Send (blue primary with glow, requires every step complete)
+- Sonner toast confirmation on save/send
+- Sonner `<Toaster />` mounted in App.js with dark theme
+
+**New mock data:** PATHS, POSES, TASK_TYPES, PRIORITIES
+**New component:** TaskCreateDrawer.jsx
