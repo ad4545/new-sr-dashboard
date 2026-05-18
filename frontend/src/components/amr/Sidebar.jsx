@@ -16,6 +16,7 @@ import {
   Menu,
   X,
   BarChart3,
+  Video,
 } from "lucide-react";
 
 const NAV = [
@@ -23,6 +24,7 @@ const NAV = [
   { to: "/fleet", label: "Fleet", icon: Bot, testid: "nav-fleet" },
   { to: "/tasks", label: "Tasks", icon: ListTodo, testid: "nav-tasks" },
   { to: "/map", label: "Live Map", icon: Map, testid: "nav-map" },
+  { to: "/video", label: "Video Stream", icon: Video, testid: "nav-video" },
   { to: "/charging", label: "Charging", icon: BatteryCharging, testid: "nav-charging" },
   { to: "/stats", label: "Stats", icon: BarChart3, testid: "nav-stats" },
   { to: "/history", label: "History", icon: History, testid: "nav-history" },

@@ -233,6 +233,49 @@ Task creation composer — industrial AMR mission builder:
 - **P2**: Mini sparklines under KPI tiles on Robot Stats (7-day micro-trends)
 - **P2**: Extract shared `Tile` / `ChartCard` primitives across OverallStats and RobotStats
 
+## Iteration 15 (2026-05-18)
+**Video Stream page delivered at `/video`**
+- Added "Video Stream" item to sidebar nav (between Live Map and Charging)
+- Route `/video` mounts `<VideoStreamPage />`
+- **Full-screen robot POV feed** built with pure CSS perspective:
+  - Animated warehouse aisle floor with scrolling perspective grid + lane separators
+  - Side walls / shelf columns receding in 3D using `rotateY()` + `transform-style: preserve-3d`
+  - Overhead ceiling light glow strip
+  - Camera grain + scanlines + lens vignette for authentic feed feel
+  - 3 camera modes: **Front** / **Rear** (mirrored) / **Top-Down** (different scrolling pattern)
+- **HUD overlay (always on top of video)**:
+  - 4 corner brackets (cyan, glow)
+  - Center reticle with crosshair + targeting dot
+  - Horizon line
+  - REC indicator with pulsing red dot + timecode when recording
+- **Top bar**:
+  - Robot dropdown selector (8 AMRs with status colors)
+  - Inline connection chips: Link RSSI, Latency, Bitrate, FPS (all colored by health)
+  - Back-to-Dashboard button (offset to clear sidebar)
+- **Right-side metric rail** (overlaid on video, glassy black/55 + backdrop-blur):
+  - **Pose card** with X/Y/θ coordinates + animated **mini-radar sweep**
+  - **Linear Velocity** (m/s, big)
+  - **Angular Velocity** (rad/s)
+  - **Internet card**: SignalBars meter, RSSI, AP name (wh-mesh-04), Latency, Jitter
+  - **Battery** (color-coded by SoC, with SoH + ETA)
+  - **Obstacle Distance** (forward field, color-coded by safety)
+- **Bottom-left camera controls** (offset to clear sidebar):
+  - 3-mode toggle (Front / Rear / Top-Down)
+  - Record / Stop button with pulse
+  - Mic Talk / Mute toggle
+  - **E-Stop** red button (emergency safety)
+- **Bottom-right joystick** with pointer-events drag tracking:
+  - 180px circular base with crosshair, ring markers, F/B/L/R labels
+  - Cyan/blue radial-gradient knob with white center dot, 64px
+  - Spring-back snap on release (`cubic-bezier(0.34, 1.56, 0.64, 1)`)
+  - Constrained to 60px radius from center
+  - **Auto / Manual** drive mode toggle; in Auto, joystick is disabled with "Autopilot" overlay; in Manual, joystick directly drives the velocity metrics
+  - Live "Cmd" readout showing normalized command vector
+- **Live metric ticker**: every 600ms wobbles signal/latency/jitter/bitrate/FPS/obstacle, drains battery slowly, updates X/Y/θ; in Manual mode, joystick directly influences linVel/angVel and position
+- **Bottom-center status strip**: "Live Stream · {Robot} · {Camera} · 1920×1080 · h.264 · mode: auto/manual"
+- New CSS keyframes added: `amr-floor-scroll`, `amr-topdown-scroll`, `amr-shelf-scroll`, `amr-grain-shift`, `amr-radar-rotate`
+- Tested: robot selection, camera mode switching, manual drive (joystick drag → live velocity updates), record toggle, status overlays — all working
+
 ## Iteration 14 (2026-05-18)
 **System Logs page delivered at `/stats/logs`**
 - **Severity stat strip** at top: 5 clickable tiles (Critical / Error / Warning / Info / Debug) showing event count + % share within the active time window; clicking toggles severity filter
