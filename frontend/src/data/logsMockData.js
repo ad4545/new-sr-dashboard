@@ -2,24 +2,22 @@
 // Pure mock data, deterministic per page-load.
 
 export const LOG_SEVERITIES = [
-  { id: "critical", label: "Critical", color: "#EF4444" },
-  { id: "error", label: "Error", color: "#F97316" },
+  { id: "info", label: "Normal", color: "#94A3B8" },
   { id: "warn", label: "Warning", color: "#F59E0B" },
-  { id: "info", label: "Info", color: "#00C2FF" },
-  { id: "debug", label: "Debug", color: "#64748B" },
+  { id: "error", label: "Error", color: "#EF4444" },
 ];
 
 export const LOG_SOURCES = [
-  { id: "navigation", label: "Navigation", color: "#00C2FF" },
-  { id: "battery", label: "Battery", color: "#10B981" },
-  { id: "safety", label: "Safety", color: "#EF4444" },
-  { id: "task-manager", label: "Task Mgr", color: "#A855F7" },
-  { id: "comms", label: "Comms", color: "#0066FF" },
-  { id: "lidar", label: "LiDAR", color: "#EC4899" },
-  { id: "firmware", label: "Firmware", color: "#F59E0B" },
-  { id: "charging", label: "Charging", color: "#10B981" },
-  { id: "maintenance", label: "Maintenance", color: "#F97316" },
-  { id: "vision", label: "Vision", color: "#06B6D4" },
+  { id: "navigation", label: "Navigation" },
+  { id: "battery", label: "Battery" },
+  { id: "safety", label: "Safety" },
+  { id: "task-manager", label: "Task Mgr" },
+  { id: "comms", label: "Comms" },
+  { id: "lidar", label: "LiDAR" },
+  { id: "firmware", label: "Firmware" },
+  { id: "charging", label: "Charging" },
+  { id: "maintenance", label: "Maintenance" },
+  { id: "vision", label: "Vision" },
 ];
 
 export const LOG_TIME_RANGES = [
@@ -247,18 +245,20 @@ const _pick = (arr, r) => arr[Math.floor(r * arr.length)];
 const _round = (n, d = 2) => +n.toFixed(d);
 
 const NOW = Date.now();
+
+// Build a fixed list: 70 normal/info events + 1 warning + 1 error
 const _gen = () => {
   const r = _rng(SEED);
-  const out = [];
-  // generate 72 events over last 24 hours (skewed: more recent = more events)
-  for (let i = 0; i < 72; i++) {
-    const t = TEMPLATES[Math.floor(r() * TEMPLATES.length)];
+  const infoTemplates = TEMPLATES.filter((t) => t.severity === "info");
+  const warnTemplates = TEMPLATES.filter((t) => t.severity === "warn");
+  const errorTemplates = TEMPLATES.filter(
+    (t) => t.severity === "error" || t.severity === "critical"
+  );
+
+  const buildEvent = (template, hoursAgo, idx) => {
     const robot = _pick(ROBOTS, r());
     const zone = _pick(ZONES, r());
-    // bias toward more recent timestamps (last 24h, with most events in last 6h)
-    const bias = Math.pow(r(), 1.6); // 0..1 with more density toward 0
-    const ts = new Date(NOW - bias * 24 * 60 * 60 * 1000);
-    // Random pose
+    const ts = new Date(NOW - hoursAgo * 60 * 60 * 1000 - r() * 60_000);
     const x = _round(2 + r() * 28, 2);
     const y = _round(2 + r() * 14, 2);
     const theta = _round(-180 + r() * 360, 1);
@@ -266,40 +266,45 @@ const _gen = () => {
     const vAng = _round((r() - 0.5) * 0.6, 2);
     const battery = Math.round(8 + r() * 92);
     const taskId =
-      t.source === "task-manager" || r() > 0.65
+      template.source === "task-manager" || r() > 0.65
         ? `TSK-${1200 + Math.floor(r() * 200)}`
         : null;
-    // Sensor mini-status panel
-    const sensors = {
-      front_lidar: r() > 0.05 ? "ok" : "warn",
-      rear_lidar: r() > 0.06 ? "ok" : "warn",
-      bumper: t.code === "SAFE-0203" ? "triggered" : "ok",
-      imu: r() > 0.02 ? "ok" : "drift",
-      wifi: r() > 0.08 ? "ok" : "weak",
-    };
-    out.push({
-      id: `EVT-${(100000 + i).toString()}`,
+    return {
+      id: `EVT-${(100000 + idx).toString()}`,
       ts: ts.toISOString(),
       timestamp: ts,
-      severity: t.severity,
-      source: t.source,
+      severity: template.severity === "critical" ? "error" : template.severity,
+      source: template.source,
       robotId: robot,
       zone,
-      code: t.code,
-      title: t.title,
-      description: t.description,
-      suggested: t.suggested,
-      acked: r() > 0.7,
+      code: template.code,
+      title: template.title,
+      description: template.description,
+      suggested: template.suggested,
+      acked: r() > 0.85,
       details: {
         position: { x, y, theta },
         velocity: { linear: vLin, angular: vAng },
         battery,
         taskId,
-        sensors,
       },
-    });
+    };
+  };
+
+  const out = [];
+  // 70 normal events spread across last 24h
+  for (let i = 0; i < 70; i++) {
+    const tmpl = infoTemplates[Math.floor(r() * infoTemplates.length)];
+    const hoursAgo = Math.pow(r(), 1.6) * 24;
+    out.push(buildEvent(tmpl, hoursAgo, i));
   }
-  // newest first
+  // 1 warning — placed about 2 hours ago (recent enough to be visible)
+  const warnTmpl = warnTemplates[Math.floor(r() * warnTemplates.length)];
+  out.push(buildEvent(warnTmpl, 2 + r() * 1.5, 200));
+  // 1 error — placed in the very recent window so it surfaces near the top
+  const errTmpl = errorTemplates[Math.floor(r() * errorTemplates.length)];
+  out.push(buildEvent(errTmpl, 0.2 + r() * 0.8, 201));
+
   out.sort((a, b) => b.timestamp - a.timestamp);
   return out;
 };

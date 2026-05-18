@@ -1,10 +1,8 @@
 import React, { useMemo, useState } from "react";
 import {
-  AlertOctagon,
   AlertCircle,
   AlertTriangle,
   Info,
-  Bug,
   Search,
   X,
   Download,
@@ -43,11 +41,9 @@ const SEVERITY_MAP = Object.fromEntries(LOG_SEVERITIES.map((s) => [s.id, s]));
 const SOURCE_MAP = Object.fromEntries(LOG_SOURCES.map((s) => [s.id, s]));
 
 const SEVERITY_ICONS = {
-  critical: AlertOctagon,
-  error: AlertCircle,
-  warn: AlertTriangle,
   info: Info,
-  debug: Bug,
+  warn: AlertTriangle,
+  error: AlertCircle,
 };
 
 const SOURCE_ICONS = {
@@ -64,55 +60,58 @@ const SOURCE_ICONS = {
 };
 
 // ---------------------------------------------------------------------------
-// Source pill
+// Source pill — neutral monochrome (no per-source color)
 // ---------------------------------------------------------------------------
 const SourcePill = ({ source }) => {
   const s = SOURCE_MAP[source];
   const Icon = SOURCE_ICONS[source];
   return (
-    <span
-      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider"
-      style={{
-        color: s.color,
-        background: `${s.color}10`,
-        border: `1px solid ${s.color}30`,
-      }}
-    >
-      <Icon className="h-3 w-3" strokeWidth={2.2} />
+    <span className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-[10px] font-medium uppercase tracking-[0.08em] text-slate-400 bg-white/[0.03] border border-white/[0.06]">
+      <Icon className="h-3 w-3" strokeWidth={1.8} />
       {s.label}
     </span>
   );
 };
 
 // ---------------------------------------------------------------------------
-// Log Row (expand-on-hover)
+// Log Row (expand-on-hover, neutral by default, color only for warn/error)
 // ---------------------------------------------------------------------------
 const LogRow = ({ log }) => {
   const sev = SEVERITY_MAP[log.severity];
   const Icon = SEVERITY_ICONS[log.severity];
+  const isNormal = log.severity === "info";
 
   return (
     <div
       data-testid={`log-row-${log.id}`}
-      className="group relative rounded-lg border border-white/[0.06] bg-[#15171D]/80 hover:border-white/20 hover:bg-[#15171D] transition-all overflow-hidden"
-      style={{ boxShadow: `inset 3px 0 0 0 ${sev.color}88` }}
+      className={[
+        "group relative rounded-md border bg-[#15171D]/60 hover:bg-[#15171D] transition-all overflow-hidden",
+        isNormal
+          ? "border-white/[0.05] hover:border-white/[0.14]"
+          : "border-white/[0.08] hover:border-white/[0.2]",
+      ].join(" ")}
+      style={
+        isNormal
+          ? undefined
+          : { boxShadow: `inset 3px 0 0 0 ${sev.color}` }
+      }
     >
       {/* Header row */}
       <div className="flex items-center gap-3 px-4 py-2.5 text-left">
-        {/* Severity icon */}
+        {/* Severity icon — muted for normal, colored for warn/error */}
         <Icon
-          className="h-3.5 w-3.5 shrink-0"
-          style={{ color: sev.color }}
-          strokeWidth={2.2}
+          className="h-[14px] w-[14px] shrink-0"
+          style={{ color: isNormal ? "#475569" : sev.color }}
+          strokeWidth={1.8}
         />
 
         {/* Timestamp */}
-        <span className="text-[12px] font-bold text-white tabular-nums font-mono shrink-0 w-[72px]">
+        <span className="text-[12px] font-medium text-slate-300 tabular-nums font-mono shrink-0 w-[72px] tracking-tight">
           {formatClock(log.timestamp)}
         </span>
 
         {/* Robot */}
-        <span className="text-[11px] font-bold text-slate-400 font-mono shrink-0 w-[60px]">
+        <span className="text-[11px] font-semibold text-slate-500 font-mono shrink-0 w-[60px] tracking-tight">
           {log.robotId}
         </span>
 
@@ -122,27 +121,34 @@ const LogRow = ({ log }) => {
         </div>
 
         {/* Code */}
-        <span className="text-[10px] font-bold text-slate-500 font-mono tabular-nums shrink-0 w-[80px]">
+        <span className="text-[10px] font-medium text-slate-600 font-mono tabular-nums shrink-0 w-[80px] tracking-tight">
           {log.code}
         </span>
 
         {/* Title */}
         <div className="flex-1 min-w-0">
-          <div className="text-[13px] font-semibold text-slate-200 truncate group-hover:text-white transition-colors">
+          <div
+            className={[
+              "text-[13px] truncate transition-colors tracking-[-0.005em]",
+              isNormal
+                ? "text-slate-300 font-medium group-hover:text-white"
+                : "text-white font-semibold",
+            ].join(" ")}
+          >
             {log.title}
           </div>
         </div>
 
         {/* Time ago + Acked */}
-        <span className="text-[10px] text-slate-500 font-semibold shrink-0">
+        <span className="text-[10px] text-slate-600 font-medium shrink-0 tabular-nums">
           {formatTimeAgo(log.timestamp)}
         </span>
         {log.acked && (
           <span
-            className="hidden md:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider text-emerald-400/80 shrink-0"
+            className="hidden md:inline-flex items-center gap-1 text-slate-500 shrink-0"
             title="Acknowledged"
           >
-            <CheckCheck className="h-2.5 w-2.5" strokeWidth={2.4} />
+            <CheckCheck className="h-3 w-3" strokeWidth={2} />
           </span>
         )}
       </div>
@@ -153,13 +159,13 @@ const LogRow = ({ log }) => {
         className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-300"
       >
         <div className="overflow-hidden">
-          <div className="px-4 pb-3 pt-1 border-t border-white/[0.06]">
-            <p className="text-[12px] text-slate-300 leading-relaxed mb-2">
+          <div className="px-4 pb-3 pt-1 border-t border-white/[0.04]">
+            <p className="text-[12px] text-slate-400 leading-relaxed mb-2 tracking-[-0.005em]">
               {log.description}
             </p>
 
-            {/* Inline diagnostics (single row, compact) */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] font-mono mb-2">
+            {/* Inline diagnostics */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mb-2">
               <DataPair label="POS" value={`${log.details.position.x}, ${log.details.position.y}`} />
               <DataPair label="θ" value={`${log.details.position.theta}°`} />
               <DataPair label="VEL" value={`${log.details.velocity.linear} m/s`} />
@@ -169,10 +175,9 @@ const LogRow = ({ log }) => {
               <DataPair label="ID" value={log.id} />
             </div>
 
-            {/* Suggested action + buttons */}
             <div className="flex items-center justify-between gap-3 flex-wrap">
               {log.suggested ? (
-                <p className="text-[11px] text-slate-400 italic flex-1 min-w-0">
+                <p className="text-[11px] text-slate-500 italic flex-1 min-w-0">
                   → {log.suggested}
                 </p>
               ) : (
@@ -195,7 +200,7 @@ const LogRow = ({ log }) => {
                 >
                   Copy
                 </ActionButton>
-                <ActionButton testid={`log-locate-${log.id}`} icon={MapPin} accent>
+                <ActionButton testid={`log-locate-${log.id}`} icon={MapPin}>
                   Locate
                 </ActionButton>
               </div>
@@ -211,15 +216,17 @@ const LogRow = ({ log }) => {
 // Tiny building blocks
 // ---------------------------------------------------------------------------
 const DataPair = ({ label, value }) => (
-  <span className="inline-flex items-center gap-1">
-    <span className="text-[9px] uppercase tracking-[0.18em] text-slate-500 font-bold">
+  <span className="inline-flex items-center gap-1.5">
+    <span className="text-[9px] uppercase tracking-[0.18em] text-slate-600 font-semibold">
       {label}
     </span>
-    <span className="text-[11px] text-white font-bold tabular-nums">{value}</span>
+    <span className="text-[11px] text-slate-300 font-medium tabular-nums font-mono">
+      {value}
+    </span>
   </span>
 );
 
-const ActionButton = ({ icon: Icon, children, onClick, active, accent, testid }) => (
+const ActionButton = ({ icon: Icon, children, onClick, active, testid }) => (
   <button
     data-testid={testid}
     onClick={(e) => {
@@ -227,15 +234,13 @@ const ActionButton = ({ icon: Icon, children, onClick, active, accent, testid })
       onClick?.();
     }}
     className={[
-      "h-6 px-2 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 border transition-all",
+      "h-6 px-2 rounded text-[10px] font-medium uppercase tracking-[0.08em] flex items-center gap-1 border transition-all",
       active
-        ? "text-emerald-400 border-emerald-400/30 bg-emerald-400/10"
-        : accent
-          ? "text-[#00C2FF] border-[#00C2FF]/30 bg-[#00C2FF]/10 hover:bg-[#00C2FF]/20"
-          : "text-slate-400 border-white/10 bg-white/[0.02] hover:text-white hover:border-white/20",
+        ? "text-slate-300 border-white/15 bg-white/[0.04]"
+        : "text-slate-500 border-white/[0.06] bg-transparent hover:text-white hover:border-white/15 hover:bg-white/[0.03]",
     ].join(" ")}
   >
-    <Icon className="h-2.5 w-2.5" strokeWidth={2.4} />
+    <Icon className="h-2.5 w-2.5" strokeWidth={2} />
     {children}
   </button>
 );
@@ -245,29 +250,32 @@ const ActionButton = ({ icon: Icon, children, onClick, active, accent, testid })
 // ---------------------------------------------------------------------------
 const SeverityFilterPill = ({ severity, count, active, onClick }) => {
   const Icon = SEVERITY_ICONS[severity.id];
+  const isNormal = severity.id === "info";
   return (
     <button
       data-testid={`severity-pill-${severity.id}`}
       onClick={onClick}
       className={[
-        "h-8 px-2 rounded-md flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider transition-all border",
+        "h-7 px-2.5 rounded-md flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.08em] transition-all border",
         active
-          ? "text-white"
-          : "text-slate-400 border-white/10 bg-white/[0.02] hover:text-white hover:border-white/20",
+          ? isNormal
+            ? "text-slate-200 border-white/20 bg-white/[0.06]"
+            : "text-white"
+          : "text-slate-500 border-white/[0.06] bg-transparent hover:text-slate-300 hover:border-white/15",
       ].join(" ")}
       style={
-        active
+        active && !isNormal
           ? {
               color: severity.color,
-              background: `${severity.color}18`,
-              borderColor: `${severity.color}55`,
+              background: `${severity.color}14`,
+              borderColor: `${severity.color}40`,
             }
           : {}
       }
     >
-      <Icon className="h-3 w-3" strokeWidth={2.2} />
+      <Icon className="h-3 w-3" strokeWidth={1.8} />
       {severity.label}
-      <span className="text-[9px] opacity-60 tabular-nums">{count}</span>
+      <span className="text-[9px] opacity-50 tabular-nums">{count}</span>
     </button>
   );
 };

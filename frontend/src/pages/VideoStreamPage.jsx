@@ -323,7 +323,7 @@ const SignalBars = ({ strength }) => {
 };
 
 const RightRail = ({ metrics, robot }) => (
-  <div className="absolute right-4 top-24 z-30 flex flex-col gap-2.5 max-w-[220px]">
+  <div className="absolute right-4 top-24 bottom-[210px] z-30 flex flex-col gap-2 max-w-[220px] overflow-hidden">
     {/* Position card big */}
     <div className="rounded-xl border border-white/15 bg-black/55 backdrop-blur-xl px-3 py-3 shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
       <div className="flex items-center gap-2 mb-2">
@@ -568,35 +568,49 @@ const Joystick = ({ onChange, mode, setMode }) => {
   };
 
   return (
-    <div className="absolute bottom-6 right-6 z-30 flex flex-col items-end gap-2">
-      {/* Mode toggle */}
-      <div className="flex items-center gap-1.5 p-1.5 rounded-xl border border-white/15 bg-black/55 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
-        {["auto", "manual"].map((m) => (
-          <button
-            key={m}
-            data-testid={`mode-${m}`}
-            onClick={() => setMode(m)}
-            className={[
-              "h-8 px-3 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5",
-              mode === m
-                ? m === "manual"
-                  ? "bg-[#F59E0B] text-black shadow-[0_0_12px_rgba(245,158,11,0.5)]"
-                  : "bg-[#0066FF] text-white shadow-[0_0_12px_rgba(0,102,255,0.5)]"
-                : "text-slate-300 hover:text-white hover:bg-white/[0.06]",
-            ].join(" ")}
-          >
-            {m === "auto" ? <Cctv className="h-3 w-3" /> : <Power className="h-3 w-3" />}
-            {m}
-          </button>
-        ))}
+    <div className="absolute bottom-6 right-6 z-30 flex items-end gap-3">
+      {/* Mode toggle + cmd readout — stacked vertically to the LEFT of joystick */}
+      <div className="flex flex-col gap-2 mb-1">
+        <div className="flex flex-col gap-1 p-1.5 rounded-xl border border-white/15 bg-black/55 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
+          {["auto", "manual"].map((m) => (
+            <button
+              key={m}
+              data-testid={`mode-${m}`}
+              onClick={() => setMode(m)}
+              className={[
+                "h-7 px-3 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 justify-center",
+                mode === m
+                  ? m === "manual"
+                    ? "bg-[#F59E0B] text-black"
+                    : "bg-[#0066FF] text-white"
+                  : "text-slate-300 hover:text-white hover:bg-white/[0.06]",
+              ].join(" ")}
+            >
+              {m === "auto" ? <Cctv className="h-3 w-3" /> : <Power className="h-3 w-3" />}
+              {m}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg border border-white/15 bg-black/55 backdrop-blur-xl">
+          <span className="text-[8px] uppercase tracking-[0.2em] text-slate-500 font-bold">
+            Cmd
+          </span>
+          <span className="text-[10px] font-extrabold text-white tabular-nums font-mono leading-none">
+            {(-pos.y / RADIUS).toFixed(2)}
+          </span>
+          <span className="text-[10px] font-extrabold text-white tabular-nums font-mono leading-none">
+            {(pos.x / RADIUS).toFixed(2)}
+          </span>
+        </div>
       </div>
 
-      {/* Joystick base */}
+      {/* Joystick base — compact */}
       <div
         className="relative rounded-full border-2 backdrop-blur-xl"
         style={{
-          width: 180,
-          height: 180,
+          width: 150,
+          height: 150,
           borderColor: "rgba(255,255,255,0.18)",
           background:
             "radial-gradient(circle at 50% 40%, rgba(0,102,255,0.15) 0%, rgba(0,0,0,0.7) 70%)",
@@ -606,25 +620,22 @@ const Joystick = ({ onChange, mode, setMode }) => {
         {/* Crosshair */}
         <span className="absolute top-1/2 left-2 right-2 h-px bg-white/10 -translate-y-1/2" />
         <span className="absolute left-1/2 top-2 bottom-2 w-px bg-white/10 -translate-x-1/2" />
-        {/* Rings */}
-        <span className="absolute inset-4 rounded-full border border-white/[0.06]" />
-        <span className="absolute inset-10 rounded-full border border-white/[0.04]" />
+        <span className="absolute inset-3 rounded-full border border-white/[0.06]" />
+        <span className="absolute inset-8 rounded-full border border-white/[0.04]" />
 
-        {/* Direction labels */}
-        <span className="absolute top-1.5 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-[0.2em] text-slate-500 font-bold">
+        <span className="absolute top-1 left-1/2 -translate-x-1/2 text-[8px] uppercase tracking-[0.2em] text-slate-500 font-bold">
           F
         </span>
-        <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-[0.2em] text-slate-500 font-bold">
+        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[8px] uppercase tracking-[0.2em] text-slate-500 font-bold">
           R
         </span>
-        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] uppercase tracking-[0.2em] text-slate-500 font-bold">
+        <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[8px] uppercase tracking-[0.2em] text-slate-500 font-bold">
           L
         </span>
-        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] uppercase tracking-[0.2em] text-slate-500 font-bold">
+        <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[8px] uppercase tracking-[0.2em] text-slate-500 font-bold">
           R
         </span>
 
-        {/* Knob track area */}
         <div
           ref={baseRef}
           data-testid="joystick-base"
@@ -635,10 +646,9 @@ const Joystick = ({ onChange, mode, setMode }) => {
           onPointerCancel={onPointerUp}
           style={{ cursor: dragging ? "grabbing" : "grab" }}
         >
-          {/* Knob */}
           <div
             data-testid="joystick-knob"
-            className="absolute h-[64px] w-[64px] rounded-full border-2 border-white/30 shadow-[0_8px_24px_rgba(0,194,255,0.4)] pointer-events-none transition-transform"
+            className="absolute h-[52px] w-[52px] rounded-full border-2 border-white/30 shadow-[0_8px_24px_rgba(0,194,255,0.4)] pointer-events-none transition-transform"
             style={{
               left: "50%",
               top: "50%",
@@ -649,32 +659,21 @@ const Joystick = ({ onChange, mode, setMode }) => {
               transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
             }}
           >
-            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-white/80 shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-white/80 shadow-[0_0_6px_rgba(255,255,255,0.8)]" />
           </div>
         </div>
 
-        {/* Disabled overlay when auto mode */}
         {mode === "auto" && (
           <div className="absolute inset-0 rounded-full bg-black/55 backdrop-blur-sm flex flex-col items-center justify-center pointer-events-none gap-1">
-            <Cctv className="h-5 w-5 text-[#00C2FF]" strokeWidth={1.8} />
-            <span className="text-[9px] uppercase tracking-[0.2em] text-[#00C2FF] font-bold">
+            <Cctv className="h-4 w-4 text-[#00C2FF]" strokeWidth={1.8} />
+            <span className="text-[8px] uppercase tracking-[0.2em] text-[#00C2FF] font-bold">
               Autopilot
             </span>
-            <span className="text-[8px] uppercase tracking-[0.2em] text-slate-500 font-bold mt-1">
-              Switch to manual to drive
+            <span className="text-[7px] uppercase tracking-[0.2em] text-slate-500 font-bold mt-0.5">
+              Manual to drive
             </span>
           </div>
         )}
-      </div>
-
-      {/* Joystick live readout */}
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/15 bg-black/55 backdrop-blur-xl">
-        <span className="text-[9px] uppercase tracking-[0.2em] text-slate-500 font-bold">
-          Cmd
-        </span>
-        <span className="text-[11px] font-extrabold text-white tabular-nums font-mono">
-          {(-pos.y / RADIUS).toFixed(2)} / {(pos.x / RADIUS).toFixed(2)}
-        </span>
       </div>
     </div>
   );

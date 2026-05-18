@@ -240,6 +240,23 @@ Task creation composer — industrial AMR mission builder:
 - Sensor state chips removed (the user said the page was cluttered — they're available in deeper inspection screens if needed)
 - Net result: cleaner, scannable, glanceable log stream with hover-to-inspect behavior
 
+## Iteration 17 (2026-05-18)
+**Logs page made professional + Video Stream joystick repositioned**
+
+### Logs page — simplified & toned down
+- **Severity levels reduced from 5 → 3**: Normal (was Info), Warning, Error (removed Critical and Debug)
+- Mock generator updated: **70 normal events + exactly 1 warning + 1 error** so the list is glanceably calm, with the warning and error standing out as designed
+- **Source pills are now neutral monochrome** (slate-400 text on white/[0.03] background, no per-source color) — removes the rainbow look that was making the page busy
+- Severity color is now only applied to **warn/error rows** (red/amber left-border accent + bright title); normal rows render fully neutral (no left border, slate-300 title)
+- **Typography refined across all rows**: lighter font weights (`font-medium`/`font-semibold` instead of all `font-bold`), tighter letter-spacing (`tracking-tight` for mono / `tracking-[-0.005em]` for body), smaller `tracking-[0.08em]` on uppercase labels (was wider)
+- Severity filter pills also adopt the neutral-when-info, color-only-when-warn/error rule
+
+### Video Stream — joystick repositioned
+- **Joystick downsized 180px → 150px**, knob 64px → 52px
+- **Mode toggle + CMD readout moved from above/below the joystick to a vertical stack on its LEFT** (compact pair of glassy cards)
+- **Right metric rail bounded by `bottom-[210px]`** so it never extends into the joystick zone — all 6 cards (Pose, Linear Vel, Angular Vel, Internet, Battery, Obstacle Distance) fit cleanly above
+- No more overlap between the metrics and the joystick or its overlays
+
 ## Pending / Roadmap
 - **P2**: Mini sparklines under KPI tiles on Robot Stats (7-day micro-trends)
 - **P2**: Extract shared `Tile` / `ChartCard` primitives across OverallStats and RobotStats
