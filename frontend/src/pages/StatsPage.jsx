@@ -4,6 +4,7 @@ import Sidebar, { SIDEBAR_W } from "../components/amr/Sidebar";
 import TopHeader from "../components/amr/TopHeader";
 import OverallStats from "../components/amr/stats/OverallStats";
 import RobotStats from "../components/amr/stats/RobotStats";
+import SystemLogs from "../components/amr/stats/SystemLogs";
 import { BarChart3, Bot, ScrollText, Calendar, Download } from "lucide-react";
 
 const STORAGE_KEY = "amr-sidebar-collapsed";
@@ -13,19 +14,6 @@ const SUBNAV = [
   { to: "robots", label: "Robot Stats", icon: Bot, testid: "tab-robots" },
   { to: "logs", label: "Logs", icon: ScrollText, testid: "tab-logs" },
 ];
-
-const Placeholder = ({ title }) => (
-  <div className="h-[360px] rounded-2xl border border-dashed border-white/[0.12] bg-[#15171D] flex flex-col items-center justify-center text-center px-6">
-    <div className="h-14 w-14 rounded-2xl bg-[#0066FF]/15 border border-[#0066FF]/30 flex items-center justify-center mb-4">
-      <BarChart3 className="h-6 w-6 text-[#00C2FF]" strokeWidth={1.6} />
-    </div>
-    <h3 className="text-xl font-extrabold text-white mb-1.5">{title}</h3>
-    <p className="text-[13px] text-slate-400 max-w-md">
-      This section is on the roadmap. Detailed per-robot breakdowns and a
-      searchable event log will land in the next release.
-    </p>
-  </div>
-);
 
 export default function StatsPage() {
   const [collapsed, setCollapsed] = useState(() => {
@@ -126,7 +114,7 @@ export default function StatsPage() {
             <Route index element={<Navigate to="overall" replace />} />
             <Route path="overall" element={<OverallStats />} />
             <Route path="robots" element={<RobotStats />} />
-            <Route path="logs" element={<Placeholder title="System Logs" />} />
+            <Route path="logs" element={<SystemLogs />} />
           </Routes>
 
           <div className="flex items-center justify-between px-1 pt-4 pb-2 text-[11px] uppercase tracking-[0.2em] text-slate-600 border-t border-white/5 font-semibold mt-3">

@@ -230,6 +230,30 @@ Task creation composer — industrial AMR mission builder:
 - Extended `getRobotProfile()` to build `energyDaily` and `throughputIntraday` series
 
 ## Pending / Roadmap
-- **P1**: Build out `/stats/logs` (currently a placeholder) — searchable/filterable event log table
 - **P2**: Mini sparklines under KPI tiles on Robot Stats (7-day micro-trends)
 - **P2**: Extract shared `Tile` / `ChartCard` primitives across OverallStats and RobotStats
+
+## Iteration 14 (2026-05-18)
+**System Logs page delivered at `/stats/logs`**
+- **Severity stat strip** at top: 5 clickable tiles (Critical / Error / Warning / Info / Debug) showing event count + % share within the active time window; clicking toggles severity filter
+- **Filter bar**:
+  - Text search across title/description/code/robot/id (e.g., "NAV-0412", "bumper", "AMR-03")
+  - Robot select (All Robots + 8 AMRs)
+  - Source select (All Sources + 10 categories: navigation, battery, safety, task-mgr, comms, lidar, firmware, charging, maintenance, vision)
+  - Time range chips: 1h · 6h · 24h · 7d (cyan when active)
+  - All / Unacked toggle
+  - Clear filters (appears when any filter active)
+  - CSV export (visual)
+- **Active severity filter chip row** appears under filter bar when severities selected, with × to remove individually
+- **Result count strip**: "Showing X of 72 events" + live-stream indicator with pulsing dot
+- **Collapsible log rows**: each row has severity-color left border (solid when expanded, faded when collapsed), severity icon, timestamp + relative-time, robot badge, source pill, monospace event code, title, "Acked" badge, chevron
+- **Expanded panel** (per row):
+  - Description text
+  - **Diagnostics Snapshot**: Position (x,y), Heading θ, Linear/Angular Velocity, Battery %, Zone, Linked Task ID, Event ID — all in mono tabular numerals
+  - **Sensor State chips**: Front LiDAR · Rear LiDAR · Bumper · IMU · WiFi (status-colored: ok / warn / triggered / drift / weak)
+  - **Suggested Resolution** (or Raw Payload JSON for non-actionable events)
+  - Action buttons: Acknowledge · Copy ID (writes event ID to clipboard) · Locate (cyan, takes-you-to-map intent)
+- **Mock data** (`logsMockData.js`): 72 deterministic events across 24h, drawn from 23 realistic event templates (NAV-0412, BAT-0080, SAFE-0001, LIDAR-2050, COMM-1001, etc.), each with full diagnostics payload
+- **Empty state**: friendly "No events match" card when filters yield zero
+- Removed the placeholder; route `path="logs"` now mounts `<SystemLogs />`
+- Tested: clicking severity tile filters correctly (3 critical events shown), expanding row reveals full diagnostics panel
