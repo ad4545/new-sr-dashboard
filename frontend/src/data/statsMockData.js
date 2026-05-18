@@ -161,12 +161,91 @@ export const IDLE_TIME = {
 
 // Per-robot detailed stats for the Robot Stats subsection
 export const ROBOT_STATS = [
-  { id: "AMR-01", name: "Atlas-01", model: "HX-500 Tugger", status: "active",      battery: 92, successTasks: 142, failedTasks: 3, batteryPerCycle: 5.8, totalDistance: 248.4, distancePerCycle: 16.2, charges: 28 },
-  { id: "AMR-02", name: "Atlas-02", model: "HX-500 Tugger", status: "active",      battery: 64, successTasks: 128, failedTasks: 5, batteryPerCycle: 6.4, totalDistance: 221.7, distancePerCycle: 14.8, charges: 25 },
-  { id: "AMR-03", name: "Nova-03",  model: "PK-200 Picker", status: "charging",    battery: 38, successTasks: 96,  failedTasks: 7, batteryPerCycle: 7.9, totalDistance: 168.2, distancePerCycle: 12.1, charges: 22 },
-  { id: "AMR-04", name: "Nova-04",  model: "PK-200 Picker", status: "active",      battery: 81, successTasks: 134, failedTasks: 4, batteryPerCycle: 6.1, totalDistance: 234.8, distancePerCycle: 15.5, charges: 26 },
-  { id: "AMR-05", name: "Orbit-05", model: "LF-1000 Lifter",status: "idle",        battery: 56, successTasks: 88,  failedTasks: 2, batteryPerCycle: 6.7, totalDistance: 156.0, distancePerCycle: 13.7, charges: 18 },
-  { id: "AMR-06", name: "Orbit-06", model: "LF-1000 Lifter",status: "charging",    battery: 22, successTasks: 92,  failedTasks: 6, batteryPerCycle: 7.2, totalDistance: 162.5, distancePerCycle: 12.9, charges: 20 },
-  { id: "AMR-07", name: "Kite-07",  model: "AGV-Flex",       status: "active",      battery: 77, successTasks: 154, failedTasks: 1, batteryPerCycle: 5.4, totalDistance: 268.9, distancePerCycle: 17.1, charges: 30 },
-  { id: "AMR-08", name: "Kite-08",  model: "AGV-Flex",       status: "maintenance", battery: 45, successTasks: 0,   failedTasks: 0, batteryPerCycle: 0,   totalDistance: 0,     distancePerCycle: 0,   charges: 0  },
+  { id: "AMR-01", name: "Atlas-01", model: "HX-500 Tugger", status: "active",      battery: 92, successTasks: 142, failedTasks: 3, batteryPerCycle: 5.8, totalDistance: 248.4, distancePerCycle: 16.2, charges: 28, avgSpeed: 1.18, avgTime: 4.6, uptime: "14h 22m", zone: "A-4" },
+  { id: "AMR-02", name: "Atlas-02", model: "HX-500 Tugger", status: "active",      battery: 64, successTasks: 128, failedTasks: 5, batteryPerCycle: 6.4, totalDistance: 221.7, distancePerCycle: 14.8, charges: 25, avgSpeed: 1.09, avgTime: 5.0, uptime: "11h 03m", zone: "B-2" },
+  { id: "AMR-03", name: "Nova-03",  model: "PK-200 Picker", status: "charging",    battery: 38, successTasks: 96,  failedTasks: 7, batteryPerCycle: 7.9, totalDistance: 168.2, distancePerCycle: 12.1, charges: 22, avgSpeed: 0.98, avgTime: 5.4, uptime: "08h 47m", zone: "DOCK-1" },
+  { id: "AMR-04", name: "Nova-04",  model: "PK-200 Picker", status: "active",      battery: 81, successTasks: 134, failedTasks: 4, batteryPerCycle: 6.1, totalDistance: 234.8, distancePerCycle: 15.5, charges: 26, avgSpeed: 1.14, avgTime: 4.7, uptime: "09h 15m", zone: "C-1" },
+  { id: "AMR-05", name: "Orbit-05", model: "LF-1000 Lifter",status: "idle",        battery: 56, successTasks: 88,  failedTasks: 2, batteryPerCycle: 6.7, totalDistance: 156.0, distancePerCycle: 13.7, charges: 18, avgSpeed: 1.04, avgTime: 5.1, uptime: "06h 10m", zone: "A-1" },
+  { id: "AMR-06", name: "Orbit-06", model: "LF-1000 Lifter",status: "charging",    battery: 22, successTasks: 92,  failedTasks: 6, batteryPerCycle: 7.2, totalDistance: 162.5, distancePerCycle: 12.9, charges: 20, avgSpeed: 1.01, avgTime: 5.3, uptime: "02h 41m", zone: "DOCK-2" },
+  { id: "AMR-07", name: "Kite-07",  model: "AGV-Flex",      status: "active",      battery: 77, successTasks: 154, failedTasks: 1, batteryPerCycle: 5.4, totalDistance: 268.9, distancePerCycle: 17.1, charges: 30, avgSpeed: 1.22, avgTime: 4.4, uptime: "13h 00m", zone: "D-3" },
+  { id: "AMR-08", name: "Kite-08",  model: "AGV-Flex",      status: "maintenance", battery: 45, successTasks: 0,   failedTasks: 0, batteryPerCycle: 0,   totalDistance: 0,     distancePerCycle: 0,   charges: 0,  avgSpeed: 0,    avgTime: 0,   uptime: "00h 00m", zone: "BAY-X" },
 ];
+
+// Generates synthetic but reasonable per-robot time series given the stats
+const _seed = (s) => {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+};
+const _rng = (seed) => {
+  let s = seed;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+};
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const _buildSeries = (robot) => {
+  const rng = _rng(_seed(robot.id));
+  const batteryDaily = DAYS.map((d) => ({
+    day: d,
+    value: +(robot.batteryPerCycle * (0.7 + rng() * 0.6)).toFixed(1),
+  }));
+  const distanceDaily = DAYS.map((d) => ({
+    day: d,
+    value: +(robot.distancePerCycle * (0.8 + rng() * 0.5) * (1 + rng() * 0.3)).toFixed(1),
+  }));
+  return { batteryDaily, distanceDaily };
+};
+
+// Task-type distribution (synthesized so totals look real per robot)
+const _typeBreakdown = (robot) => {
+  if (robot.successTasks === 0) return [];
+  const total = robot.successTasks;
+  const splits = [0.38, 0.22, 0.18, 0.12, 0.06, 0.04];
+  const types = ["Pallet Transport", "Kit Delivery", "Bin Pickup", "Assembly Feed", "Empty Return", "Inspection"];
+  const colors = ["#00C2FF", "#10B981", "#F59E0B", "#A855F7", "#0066FF", "#EC4899"];
+  return types.map((t, i) => ({
+    name: t,
+    value: Math.round(total * splits[i]),
+    color: colors[i],
+  }));
+};
+
+const _statusBreakdown = (robot) => {
+  if (robot.status === "maintenance") {
+    return [
+      { name: "Service", value: 100, color: "#EF4444" },
+    ];
+  }
+  // Slight variations based on battery & model
+  const active = Math.round(58 + (robot.battery / 100) * 16);
+  const charging = Math.max(0, Math.round((100 - robot.battery) / 6));
+  const idle = Math.max(0, 100 - active - charging);
+  return [
+    { name: "Active", value: active, color: "#00C2FF" },
+    { name: "Idle", value: idle, color: "#64748B" },
+    { name: "Charging", value: charging, color: "#F59E0B" },
+  ];
+};
+
+export const getRobotProfile = (id) => {
+  const robot = ROBOT_STATS.find((r) => r.id === id);
+  if (!robot) return null;
+  const { batteryDaily, distanceDaily } = _buildSeries(robot);
+  return {
+    ...robot,
+    batteryDaily,
+    distanceDaily,
+    taskTypeBreakdown: _typeBreakdown(robot),
+    statusBreakdown: _statusBreakdown(robot),
+    successRate:
+      robot.successTasks + robot.failedTasks > 0
+        ? Math.round(
+            (robot.successTasks /
+              (robot.successTasks + robot.failedTasks)) *
+              100
+          )
+        : 0,
+  };
+};
