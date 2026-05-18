@@ -152,3 +152,20 @@ Task creation composer — industrial AMR mission builder:
 
 **New mock data:** PATHS, POSES, TASK_TYPES, PRIORITIES
 **New component:** TaskCreateDrawer.jsx
+
+## Iteration 9 (2026-05-18)
+**Stats / Analytics page**
+- Added `/stats` route with routable subsections `/stats/overall`, `/stats/robots`, `/stats/logs` (sidebar item "Stats" with BarChart3 icon)
+- Layout: same TopHeader + Sidebar + subnav tabs (Overall Stats / Robot Stats / Logs) + date-range / export buttons
+- **Overall Stats** delivered with all 7 metrics:
+  1. Total Tasks Scheduled — KPI card with area sparkline + delta chip
+  2. Total Tasks Completed — KPI + green sparkline
+  3. Average Speed per Task (m/s) — KPI + blue sparkline
+  4. Average Time per Task (min) — KPI + purple sparkline
+  5. Battery Consumption per Task — bar chart by task type (orange) + fleet avg
+  6. Tasks per Charge Cycle — bar chart by robot (blue gradient)
+  7. Robot Idle Time % — donut chart with center % + legend
+- Charts built with Recharts (Area, Bar, Pie + Cell) with custom dark tooltips and gradient fills
+- Robot Stats & Logs subsections render a polished "coming soon" placeholder card
+- New mock data: `statsMockData.js`
+- New components: `pages/StatsPage.jsx`, `components/amr/stats/OverallStats.jsx`

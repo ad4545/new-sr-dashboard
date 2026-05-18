@@ -1,6 +1,7 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "@/pages/Dashboard";
+import StatsPage from "@/pages/StatsPage";
 import { Toaster } from "@/components/ui/sonner";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
           <Route path="/tasks" element={<Dashboard />} />
           <Route path="/map" element={<Dashboard />} />
           <Route path="/charging" element={<Dashboard />} />
+          <Route path="/stats/*" element={<StatsPage />} />
           <Route path="/history" element={<Dashboard />} />
           <Route path="/alerts" element={<Dashboard />} />
           <Route path="/safety" element={<Dashboard />} />
