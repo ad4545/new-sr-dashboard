@@ -160,15 +160,16 @@ export const IDLE_TIME = {
 };
 
 // Per-robot detailed stats for the Robot Stats subsection
+// Metrics modeled after real-world AMR fleet KPIs (Fetch, MiR, OTTO, Locus, 6 River)
 export const ROBOT_STATS = [
-  { id: "AMR-01", name: "Atlas-01", model: "HX-500 Tugger", status: "active",      battery: 92, successTasks: 142, failedTasks: 3, batteryPerCycle: 5.8, totalDistance: 248.4, distancePerCycle: 16.2, charges: 28, avgSpeed: 1.18, avgTime: 4.6, uptime: "14h 22m", zone: "A-4" },
-  { id: "AMR-02", name: "Atlas-02", model: "HX-500 Tugger", status: "active",      battery: 64, successTasks: 128, failedTasks: 5, batteryPerCycle: 6.4, totalDistance: 221.7, distancePerCycle: 14.8, charges: 25, avgSpeed: 1.09, avgTime: 5.0, uptime: "11h 03m", zone: "B-2" },
-  { id: "AMR-03", name: "Nova-03",  model: "PK-200 Picker", status: "charging",    battery: 38, successTasks: 96,  failedTasks: 7, batteryPerCycle: 7.9, totalDistance: 168.2, distancePerCycle: 12.1, charges: 22, avgSpeed: 0.98, avgTime: 5.4, uptime: "08h 47m", zone: "DOCK-1" },
-  { id: "AMR-04", name: "Nova-04",  model: "PK-200 Picker", status: "active",      battery: 81, successTasks: 134, failedTasks: 4, batteryPerCycle: 6.1, totalDistance: 234.8, distancePerCycle: 15.5, charges: 26, avgSpeed: 1.14, avgTime: 4.7, uptime: "09h 15m", zone: "C-1" },
-  { id: "AMR-05", name: "Orbit-05", model: "LF-1000 Lifter",status: "idle",        battery: 56, successTasks: 88,  failedTasks: 2, batteryPerCycle: 6.7, totalDistance: 156.0, distancePerCycle: 13.7, charges: 18, avgSpeed: 1.04, avgTime: 5.1, uptime: "06h 10m", zone: "A-1" },
-  { id: "AMR-06", name: "Orbit-06", model: "LF-1000 Lifter",status: "charging",    battery: 22, successTasks: 92,  failedTasks: 6, batteryPerCycle: 7.2, totalDistance: 162.5, distancePerCycle: 12.9, charges: 20, avgSpeed: 1.01, avgTime: 5.3, uptime: "02h 41m", zone: "DOCK-2" },
-  { id: "AMR-07", name: "Kite-07",  model: "AGV-Flex",      status: "active",      battery: 77, successTasks: 154, failedTasks: 1, batteryPerCycle: 5.4, totalDistance: 268.9, distancePerCycle: 17.1, charges: 30, avgSpeed: 1.22, avgTime: 4.4, uptime: "13h 00m", zone: "D-3" },
-  { id: "AMR-08", name: "Kite-08",  model: "AGV-Flex",      status: "maintenance", battery: 45, successTasks: 0,   failedTasks: 0, batteryPerCycle: 0,   totalDistance: 0,     distancePerCycle: 0,   charges: 0,  avgSpeed: 0,    avgTime: 0,   uptime: "00h 00m", zone: "BAY-X" },
+  { id: "AMR-01", name: "Atlas-01", model: "HX-500 Tugger",   firmware: "v4.2.1", payloadKg: 500,  status: "active",      battery: 92, soh: 96, successTasks: 142, failedTasks: 3, batteryPerCycle: 5.8, totalDistance: 248.4, distancePerCycle: 16.2, charges: 28, avgSpeed: 1.18, avgTime: 4.6, uptime: "14h 22m", zone: "A-4",    throughputTph: 12.4, utilization: 78, pathEfficiency: 94, mtbfHours: 312, mttrMin: 14, eStops24h: 0, energyPerTaskWh: 28.4, localizationCm: 1.8 },
+  { id: "AMR-02", name: "Atlas-02", model: "HX-500 Tugger",   firmware: "v4.2.1", payloadKg: 500,  status: "active",      battery: 64, soh: 91, successTasks: 128, failedTasks: 5, batteryPerCycle: 6.4, totalDistance: 221.7, distancePerCycle: 14.8, charges: 25, avgSpeed: 1.09, avgTime: 5.0, uptime: "11h 03m", zone: "B-2",    throughputTph: 10.8, utilization: 71, pathEfficiency: 89, mtbfHours: 268, mttrMin: 18, eStops24h: 2, energyPerTaskWh: 31.2, localizationCm: 2.1 },
+  { id: "AMR-03", name: "Nova-03",  model: "PK-200 Picker",   firmware: "v3.9.4", payloadKg: 200,  status: "charging",    battery: 38, soh: 88, successTasks: 96,  failedTasks: 7, batteryPerCycle: 7.9, totalDistance: 168.2, distancePerCycle: 12.1, charges: 22, avgSpeed: 0.98, avgTime: 5.4, uptime: "08h 47m", zone: "DOCK-1", throughputTph: 8.9,  utilization: 62, pathEfficiency: 86, mtbfHours: 198, mttrMin: 22, eStops24h: 3, energyPerTaskWh: 36.7, localizationCm: 2.4 },
+  { id: "AMR-04", name: "Nova-04",  model: "PK-200 Picker",   firmware: "v3.9.4", payloadKg: 200,  status: "active",      battery: 81, soh: 94, successTasks: 134, failedTasks: 4, batteryPerCycle: 6.1, totalDistance: 234.8, distancePerCycle: 15.5, charges: 26, avgSpeed: 1.14, avgTime: 4.7, uptime: "09h 15m", zone: "C-1",    throughputTph: 11.6, utilization: 74, pathEfficiency: 92, mtbfHours: 284, mttrMin: 16, eStops24h: 1, energyPerTaskWh: 29.5, localizationCm: 1.9 },
+  { id: "AMR-05", name: "Orbit-05", model: "LF-1000 Lifter",  firmware: "v5.0.0", payloadKg: 1000, status: "idle",        battery: 56, soh: 90, successTasks: 88,  failedTasks: 2, batteryPerCycle: 6.7, totalDistance: 156.0, distancePerCycle: 13.7, charges: 18, avgSpeed: 1.04, avgTime: 5.1, uptime: "06h 10m", zone: "A-1",    throughputTph: 7.4,  utilization: 54, pathEfficiency: 91, mtbfHours: 240, mttrMin: 19, eStops24h: 1, energyPerTaskWh: 42.1, localizationCm: 2.0 },
+  { id: "AMR-06", name: "Orbit-06", model: "LF-1000 Lifter",  firmware: "v5.0.0", payloadKg: 1000, status: "charging",    battery: 22, soh: 82, successTasks: 92,  failedTasks: 6, batteryPerCycle: 7.2, totalDistance: 162.5, distancePerCycle: 12.9, charges: 20, avgSpeed: 1.01, avgTime: 5.3, uptime: "02h 41m", zone: "DOCK-2", throughputTph: 7.9,  utilization: 49, pathEfficiency: 84, mtbfHours: 176, mttrMin: 24, eStops24h: 4, energyPerTaskWh: 44.8, localizationCm: 2.6 },
+  { id: "AMR-07", name: "Kite-07",  model: "AGV-Flex",        firmware: "v4.2.1", payloadKg: 300,  status: "active",      battery: 77, soh: 98, successTasks: 154, failedTasks: 1, batteryPerCycle: 5.4, totalDistance: 268.9, distancePerCycle: 17.1, charges: 30, avgSpeed: 1.22, avgTime: 4.4, uptime: "13h 00m", zone: "D-3",    throughputTph: 13.6, utilization: 82, pathEfficiency: 96, mtbfHours: 348, mttrMin: 12, eStops24h: 0, energyPerTaskWh: 26.1, localizationCm: 1.6 },
+  { id: "AMR-08", name: "Kite-08",  model: "AGV-Flex",        firmware: "v4.1.0", payloadKg: 300,  status: "maintenance", battery: 45, soh: 71, successTasks: 0,   failedTasks: 0, batteryPerCycle: 0,   totalDistance: 0,     distancePerCycle: 0,   charges: 0,  avgSpeed: 0,    avgTime: 0,   uptime: "00h 00m", zone: "BAY-X",  throughputTph: 0,    utilization: 0,  pathEfficiency: 0,  mtbfHours: 84,  mttrMin: 0,  eStops24h: 0, energyPerTaskWh: 0,    localizationCm: 0 },
 ];
 
 // Generates synthetic but reasonable per-robot time series given the stats
@@ -185,6 +186,7 @@ const _rng = (seed) => {
   };
 };
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const INTRADAY = ["06–08", "08–10", "10–12", "12–14", "14–16", "16–18", "18–20", "20–22"];
 const _buildSeries = (robot) => {
   const rng = _rng(_seed(robot.id));
   const batteryDaily = DAYS.map((d) => ({
@@ -195,7 +197,19 @@ const _buildSeries = (robot) => {
     day: d,
     value: +(robot.distancePerCycle * (0.8 + rng() * 0.5) * (1 + rng() * 0.3)).toFixed(1),
   }));
-  return { batteryDaily, distanceDaily };
+  const energyDaily = DAYS.map((d) => ({
+    day: d,
+    // Wh consumed per day = energy/task × tasks/hour × ~8h with variation
+    value: Math.round(robot.energyPerTaskWh * robot.throughputTph * (6 + rng() * 4)),
+  }));
+  // Throughput per 2-hour interval today (tasks completed)
+  // Skewed bell around mid-shift; scaled by robot throughput
+  const bell = [0.55, 0.95, 1.05, 0.65, 1.1, 0.9, 0.7, 0.45];
+  const throughputIntraday = INTRADAY.map((slot, i) => ({
+    interval: slot,
+    value: Math.max(0, Math.round(robot.throughputTph * 2 * bell[i] * (0.85 + rng() * 0.3))),
+  }));
+  return { batteryDaily, distanceDaily, energyDaily, throughputIntraday };
 };
 
 // Task-type distribution (synthesized so totals look real per robot)
@@ -232,11 +246,13 @@ const _statusBreakdown = (robot) => {
 export const getRobotProfile = (id) => {
   const robot = ROBOT_STATS.find((r) => r.id === id);
   if (!robot) return null;
-  const { batteryDaily, distanceDaily } = _buildSeries(robot);
+  const { batteryDaily, distanceDaily, energyDaily, throughputIntraday } = _buildSeries(robot);
   return {
     ...robot,
     batteryDaily,
     distanceDaily,
+    energyDaily,
+    throughputIntraday,
     taskTypeBreakdown: _typeBreakdown(robot),
     statusBreakdown: _statusBreakdown(robot),
     successRate:

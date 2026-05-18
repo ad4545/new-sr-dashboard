@@ -121,6 +121,40 @@ code,
     animation: amr-bubble 2.6s ease-in-out infinite;
 }
 
+/* Horizontal battery: vertical wave that scrolls along the right surface of liquid */
+@keyframes amr-wave-vert {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-50%);
+    }
+}
+.animate-amr-wave-vert {
+    animation: amr-wave-vert 2.6s linear infinite;
+}
+.animate-amr-wave-vert-slow {
+    animation: amr-wave-vert 4.2s linear infinite reverse;
+}
+
+@keyframes amr-bubble-h {
+    0% {
+        transform: translateX(0) scale(0.7);
+        opacity: 0.55;
+    }
+    50% {
+        transform: translateX(22px) scale(1);
+        opacity: 0.35;
+    }
+    100% {
+        transform: translateX(44px) scale(0.5);
+        opacity: 0;
+    }
+}
+.animate-amr-bubble-h {
+    animation: amr-bubble-h 2.6s ease-in-out infinite;
+}
+
 @layer base {
     :root {
         --background: 222 22% 5%;

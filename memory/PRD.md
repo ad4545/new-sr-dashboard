@@ -198,3 +198,30 @@ Task creation composer — industrial AMR mission builder:
 - New mock data: `ROBOT_STATS` (per-robot)
 - New component: `components/amr/stats/RobotStats.jsx`
 - Wired into `/stats/robots` route
+
+
+## Iteration 13 (2026-05-18)
+**Robot Stats refactored to single-robot deep-dive view**
+- Replaced 8-card grid with stateful single-robot page driven by Shadcn `<Select>` dropdown (lists all 8 AMRs with status dot indicator)
+- **Horizontal battery cell** (compact, inside a card alongside other KPI tiles):
+  - Liquid fills left → right, vertical wavy surface on the right edge (front + slow translucent back wave)
+  - Drifting bubbles, centered `%` + `SoH` label, cap on right
+  - Color: green >60%, amber 30–60%, red <30%, grey for maintenance
+- New CSS keyframes added: `amr-wave-vert`, `amr-wave-vert-slow`, `amr-bubble-h`
+- **Realistic AMR/robotics KPI tiles** (replaces generic stats):
+  - Throughput (tasks/hr), Utilization %, Success Rate %, Path Efficiency %
+  - MTBF (hrs), MTTR (min), E-Stops · 24h, Avg Velocity (m/s)
+  - Total Distance (km), Localization accuracy (± cm), Failed Tasks · 7d
+  - Battery card: SoC + SoH + Energy/Task (Wh) + Battery/Cycle (%)
+- **Charts (Recharts)**:
+  - Energy consumption · 7 days (line)
+  - Throughput · today per 2-hr slot (bar)
+  - Time State · 24h donut (Active / Idle / Charging) with center % label
+- Header meta chips: Model, Firmware, Payload kg, Zone, Uptime
+- Extended `ROBOT_STATS` schema with: `firmware`, `payloadKg`, `soh`, `throughputTph`, `utilization`, `pathEfficiency`, `mtbfHours`, `mttrMin`, `eStops24h`, `energyPerTaskWh`, `localizationCm`
+- Extended `getRobotProfile()` to build `energyDaily` and `throughputIntraday` series
+
+## Pending / Roadmap
+- **P1**: Build out `/stats/logs` (currently a placeholder) — searchable/filterable event log table
+- **P2**: Mini sparklines under KPI tiles on Robot Stats (7-day micro-trends)
+- **P2**: Extract shared `Tile` / `ChartCard` primitives across OverallStats and RobotStats
