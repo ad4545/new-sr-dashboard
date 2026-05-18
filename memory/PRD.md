@@ -176,3 +176,25 @@ Task creation composer — industrial AMR mission builder:
 - **Average Speed / Task** and **Average Time / Task**: changed from sparklines to proper line charts with X-axis at 2-hour intervals (06–08, 08–10, … 20–22); explicit numeric Y-axis domain + ticks
 - Existing Battery / Charge cycle / Idle donut kept on row 3 (unchanged)
 - Added new mock data: INTERVALS, THROUGHPUT_BY_INTERVAL, SPEED_BY_INTERVAL, TIME_BY_INTERVAL
+
+## Iteration 11 (2026-05-18)
+- **Widget cards lifted off the page** — switched bg from `#0E0F13/85` to solid `#15171D` and border to `white/[0.12]`. Clear contrast against page bg `#0A0A0B`.
+- **Font upgraded** to **Manrope** (with ss01/cv02 features and -0.005em letter-spacing for refinement). Replaces Nunito across the whole `.amr-dashboard` scope (including elements that previously used `.font-mono`).
+- **`/stats` default**: index Navigate already redirects to `/stats/overall` — verified Overall Stats pill is highlighted and the throughput + line charts + bar/donut charts all render.
+
+## Iteration 12 (2026-05-18)
+**Robot Stats subsection delivered**
+- 8 robot cards (3 per row on desktop) at `/stats/robots`
+- Each card has an **animated battery cell** on the left:
+  - Tall rounded-rect with small cap, inner ridges, glowing outer shadow
+  - Liquid fills from bottom to current `battery%`
+  - **Wavy top surface** (SVG path with 8 wave periods) animated horizontally — front opaque wave + slower translucent back wave
+  - **Rising bubbles** (3 staggered, ease-in-out infinite)
+  - Color shifts: green > 60%, amber 30-60%, red <30%, grey for maintenance
+  - Centered % + "Charge" label (or "—" + "Service" for offline)
+- 5 stat rows on the right: Success Tasks, Failed Tasks, Battery / Cycle %, Total Distance km, Distance / Cycle km — each with colored icon chip
+- Card footer: charge-cycle count + computed success rate %
+- New CSS keyframes in index.css: `amr-wave`, `amr-wave-slow`, `amr-bubble`
+- New mock data: `ROBOT_STATS` (per-robot)
+- New component: `components/amr/stats/RobotStats.jsx`
+- Wired into `/stats/robots` route

@@ -13,7 +13,7 @@ export const ShiftHandover = () => {
   return (
     <div
       data-testid="shift-handover"
-      className="rounded-2xl border border-white/5 bg-[#0E0F13]/80 backdrop-blur-md p-5 flex flex-col"
+      className="rounded-2xl border border-white/5 bg-[#15171D] backdrop-blur-md p-5 flex flex-col"
     >
       <div className="flex items-center justify-between mb-3">
         <div>

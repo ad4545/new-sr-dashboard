@@ -61,7 +61,7 @@ export const TasksScheduler = () => {
   return (
     <div
       data-testid="tasks-scheduler"
-      className="h-full rounded-2xl border border-white/10 bg-[#0E0F13]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)] p-5 flex flex-col"
+      className="h-full rounded-2xl border border-white/[0.12] bg-[#15171D] backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)] p-5 flex flex-col"
     >
       <div className="flex items-center justify-between mb-4">
         <div>

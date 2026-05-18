@@ -158,3 +158,15 @@ export const IDLE_TIME = {
     { name: "Service", value: 3, color: "#EF4444" },
   ],
 };
+
+// Per-robot detailed stats for the Robot Stats subsection
+export const ROBOT_STATS = [
+  { id: "AMR-01", name: "Atlas-01", model: "HX-500 Tugger", status: "active",      battery: 92, successTasks: 142, failedTasks: 3, batteryPerCycle: 5.8, totalDistance: 248.4, distancePerCycle: 16.2, charges: 28 },
+  { id: "AMR-02", name: "Atlas-02", model: "HX-500 Tugger", status: "active",      battery: 64, successTasks: 128, failedTasks: 5, batteryPerCycle: 6.4, totalDistance: 221.7, distancePerCycle: 14.8, charges: 25 },
+  { id: "AMR-03", name: "Nova-03",  model: "PK-200 Picker", status: "charging",    battery: 38, successTasks: 96,  failedTasks: 7, batteryPerCycle: 7.9, totalDistance: 168.2, distancePerCycle: 12.1, charges: 22 },
+  { id: "AMR-04", name: "Nova-04",  model: "PK-200 Picker", status: "active",      battery: 81, successTasks: 134, failedTasks: 4, batteryPerCycle: 6.1, totalDistance: 234.8, distancePerCycle: 15.5, charges: 26 },
+  { id: "AMR-05", name: "Orbit-05", model: "LF-1000 Lifter",status: "idle",        battery: 56, successTasks: 88,  failedTasks: 2, batteryPerCycle: 6.7, totalDistance: 156.0, distancePerCycle: 13.7, charges: 18 },
+  { id: "AMR-06", name: "Orbit-06", model: "LF-1000 Lifter",status: "charging",    battery: 22, successTasks: 92,  failedTasks: 6, batteryPerCycle: 7.2, totalDistance: 162.5, distancePerCycle: 12.9, charges: 20 },
+  { id: "AMR-07", name: "Kite-07",  model: "AGV-Flex",       status: "active",      battery: 77, successTasks: 154, failedTasks: 1, batteryPerCycle: 5.4, totalDistance: 268.9, distancePerCycle: 17.1, charges: 30 },
+  { id: "AMR-08", name: "Kite-08",  model: "AGV-Flex",       status: "maintenance", battery: 45, successTasks: 0,   failedTasks: 0, batteryPerCycle: 0,   totalDistance: 0,     distancePerCycle: 0,   charges: 0  },
+];

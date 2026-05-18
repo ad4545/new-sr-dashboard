@@ -1,6 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Chivo:wght@400;500;600;700;800;900&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Chivo:wght@400;500;600;700;800;900&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap");
 
-/* Dashboard-scoped font: Nunito for EVERYTHING inside .amr-dashboard (including former .font-mono) */
+/* Dashboard-scoped font: Manrope for EVERYTHING inside .amr-dashboard (including former .font-mono) */
 .amr-dashboard,
 .amr-dashboard h1,
 .amr-dashboard h2,
@@ -18,9 +18,11 @@
 .amr-dashboard .font-mono,
 .amr-dashboard code {
     font-family:
-        "Nunito",
+        "Manrope",
         system-ui,
         sans-serif !important;
+    font-feature-settings: "ss01", "cv02", "cv03", "cv04";
+    letter-spacing: -0.005em;
 }
 
 @tailwind base;
@@ -83,6 +85,40 @@ code,
         opacity: 1;
         transform: scale(1.15);
     }
+}
+
+/* Battery liquid wave + rising bubbles */
+@keyframes amr-wave {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+.animate-amr-wave {
+    animation: amr-wave 2.6s linear infinite;
+}
+.animate-amr-wave-slow {
+    animation: amr-wave 4.2s linear infinite reverse;
+}
+
+@keyframes amr-bubble {
+    0% {
+        transform: translateY(0) scale(0.7);
+        opacity: 0.55;
+    }
+    50% {
+        transform: translateY(-22px) scale(1);
+        opacity: 0.35;
+    }
+    100% {
+        transform: translateY(-44px) scale(0.5);
+        opacity: 0;
+    }
+}
+.animate-amr-bubble {
+    animation: amr-bubble 2.6s ease-in-out infinite;
 }
 
 @layer base {

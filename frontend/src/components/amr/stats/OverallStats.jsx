@@ -38,7 +38,7 @@ import {
 
 // -------- shared --------
 const cardCls =
-  "h-full rounded-2xl border border-white/10 bg-[#0E0F13]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)] p-5 flex flex-col";
+  "h-full rounded-2xl border border-white/[0.12] bg-[#15171D] backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)] p-5 flex flex-col";
 
 const Eyebrow = ({ children }) => (
   <div className="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">

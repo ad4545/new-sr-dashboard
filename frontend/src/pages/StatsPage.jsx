@@ -3,6 +3,7 @@ import { NavLink, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar, { SIDEBAR_W } from "../components/amr/Sidebar";
 import TopHeader from "../components/amr/TopHeader";
 import OverallStats from "../components/amr/stats/OverallStats";
+import RobotStats from "../components/amr/stats/RobotStats";
 import { BarChart3, Bot, ScrollText, Calendar, Download } from "lucide-react";
 
 const STORAGE_KEY = "amr-sidebar-collapsed";
@@ -14,7 +15,7 @@ const SUBNAV = [
 ];
 
 const Placeholder = ({ title }) => (
-  <div className="h-[360px] rounded-2xl border border-dashed border-white/10 bg-[#0E0F13]/60 backdrop-blur-md flex flex-col items-center justify-center text-center px-6">
+  <div className="h-[360px] rounded-2xl border border-dashed border-white/[0.12] bg-[#15171D] flex flex-col items-center justify-center text-center px-6">
     <div className="h-14 w-14 rounded-2xl bg-[#0066FF]/15 border border-[#0066FF]/30 flex items-center justify-center mb-4">
       <BarChart3 className="h-6 w-6 text-[#00C2FF]" strokeWidth={1.6} />
     </div>
@@ -77,7 +78,7 @@ export default function StatsPage() {
 
         {/* Subnav tabs */}
         <div className="px-[10px] md:px-[12px] pt-[10px]">
-          <div className="rounded-2xl border border-white/10 bg-[#0E0F13]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)] px-3 py-2 flex items-center gap-2 flex-wrap">
+          <div className="rounded-2xl border border-white/[0.12] bg-[#15171D] shadow-[0_4px_24px_rgba(0,0,0,0.4)] px-3 py-2 flex items-center gap-2 flex-wrap">
             <div className="flex items-center gap-1 p-1 rounded-lg bg-white/[0.03] border border-white/5">
               {SUBNAV.map((s) => (
                 <NavLink
@@ -124,7 +125,7 @@ export default function StatsPage() {
           <Routes>
             <Route index element={<Navigate to="overall" replace />} />
             <Route path="overall" element={<OverallStats />} />
-            <Route path="robots" element={<Placeholder title="Robot Stats" />} />
+            <Route path="robots" element={<RobotStats />} />
             <Route path="logs" element={<Placeholder title="System Logs" />} />
           </Routes>
 

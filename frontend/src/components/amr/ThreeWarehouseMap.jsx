@@ -270,7 +270,7 @@ export const ThreeWarehouseMap = ({ onRobotClick }) => {
   return (
     <div
       data-testid="warehouse-map"
-      className="h-full rounded-2xl border border-white/10 bg-[#0E0F13]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col"
+      className="h-full rounded-2xl border border-white/[0.12] bg-[#15171D] backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col"
     >
       {/* Inline professional header bar */}
       <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between gap-3 flex-wrap">
