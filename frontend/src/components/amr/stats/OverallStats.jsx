@@ -1,8 +1,8 @@
 import React from "react";
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
   BarChart,
   Bar,
   PieChart,
@@ -14,15 +14,14 @@ import {
   CartesianGrid,
 } from "recharts";
 import {
-  ListTodo,
-  CheckCircle2,
   Gauge,
-  Timer,
   BatteryCharging,
   Repeat,
   PauseCircle,
   TrendingUp,
   TrendingDown,
+  ListChecks,
+  Clock,
 } from "lucide-react";
 import {
   TASKS_SCHEDULED,
@@ -32,9 +31,12 @@ import {
   BATTERY_PER_TASK,
   TASKS_PER_CHARGE,
   IDLE_TIME,
+  THROUGHPUT_BY_INTERVAL,
+  SPEED_BY_INTERVAL,
+  TIME_BY_INTERVAL,
 } from "../../../data/statsMockData";
 
-// ------- Generic helpers -------
+// -------- shared --------
 const cardCls =
   "h-full rounded-2xl border border-white/10 bg-[#0E0F13]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)] p-5 flex flex-col";
 
@@ -64,97 +66,281 @@ const Delta = ({ value }) => {
   );
 };
 
-const ChartTooltip = ({ active, payload, label, suffix = "" }) => {
-  if (!active || !payload || !payload.length) return null;
-  return (
-    <div className="rounded-lg border border-white/10 bg-[#0A0A0B]/95 backdrop-blur-md px-3 py-2 shadow-xl">
-      <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold mb-0.5">
-        {label}
+const tooltipBox = (label, rows) => (
+  <div className="rounded-lg border border-white/10 bg-[#0A0A0B]/95 backdrop-blur-md px-3 py-2 shadow-xl">
+    <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold mb-1">
+      {label}
+    </div>
+    {rows.map((r, i) => (
+      <div key={i} className="flex items-center gap-2 text-[13px]">
+        <span
+          className="h-2 w-2 rounded-full"
+          style={{ background: r.color, boxShadow: `0 0 6px ${r.color}` }}
+        />
+        <span className="text-slate-400">{r.name}</span>
+        <span className="text-white font-extrabold tabular-nums ml-auto">
+          {r.value}
+          {r.unit && (
+            <span className="text-slate-500 font-bold text-[11px] ml-0.5">{r.unit}</span>
+          )}
+        </span>
       </div>
-      <div className="text-[14px] font-extrabold text-white tabular-nums">
-        {payload[0].value}
-        {suffix && <span className="text-slate-400 text-[12px] ml-1">{suffix}</span>}
+    ))}
+  </div>
+);
+
+// -------- 1) Throughput combined card --------
+const ThroughputCard = () => {
+  const rate = TASKS_COMPLETED.completionRate;
+  return (
+    <div data-testid="stat-throughput" className={cardCls}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="h-9 w-9 rounded-lg bg-[#00C2FF]/15 border border-[#00C2FF]/40 flex items-center justify-center">
+            <ListChecks className="h-4 w-4 text-[#00C2FF]" strokeWidth={1.8} />
+          </span>
+          <div>
+            <Eyebrow>Tasks Throughput</Eyebrow>
+            <div className="text-[11px] text-slate-600 mt-0.5 font-semibold">
+              Today · scheduled vs completed by 2-hour interval
+            </div>
+          </div>
+        </div>
+        <div className="hidden sm:flex items-center gap-2">
+          <Legend
+            color="#00C2FF"
+            label="Scheduled"
+            value={TASKS_SCHEDULED.total}
+            delta={TASKS_SCHEDULED.delta}
+          />
+          <Legend
+            color="#10B981"
+            label="Completed"
+            value={TASKS_COMPLETED.total}
+            delta={TASKS_COMPLETED.delta}
+          />
+          <RingChip rate={rate} />
+        </div>
+      </div>
+
+      {/* Mobile summary row */}
+      <div className="flex sm:hidden items-center gap-2 mb-3">
+        <Legend
+          color="#00C2FF"
+          label="Scheduled"
+          value={TASKS_SCHEDULED.total}
+          delta={TASKS_SCHEDULED.delta}
+        />
+        <Legend
+          color="#10B981"
+          label="Completed"
+          value={TASKS_COMPLETED.total}
+          delta={TASKS_COMPLETED.delta}
+        />
+        <RingChip rate={rate} />
+      </div>
+
+      <div className="flex-1 min-h-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={THROUGHPUT_BY_INTERVAL}
+            margin={{ top: 10, right: 8, left: -16, bottom: 0 }}
+            barGap={4}
+            barCategoryGap="18%"
+          >
+            <defs>
+              <linearGradient id="thrSched" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#00C2FF" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#0066FF" stopOpacity={0.35} />
+              </linearGradient>
+              <linearGradient id="thrComp" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#10B981" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#10B981" stopOpacity={0.3} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid stroke="#1A1D24" vertical={false} />
+            <XAxis
+              dataKey="interval"
+              tick={{ fill: "#94A3B8", fontSize: 11, fontWeight: 700 }}
+              axisLine={{ stroke: "#1A1D24" }}
+              tickLine={false}
+              padding={{ left: 8, right: 8 }}
+            />
+            <YAxis
+              tick={{ fill: "#64748B", fontSize: 10, fontWeight: 700 }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <Tooltip
+              cursor={{ fill: "#0066FF14" }}
+              content={(p) => {
+                if (!p.active || !p.payload?.length) return null;
+                const d = p.payload[0].payload;
+                return tooltipBox(`${d.interval}`, [
+                  { name: "Scheduled", value: d.scheduled, color: "#00C2FF" },
+                  { name: "Completed", value: d.completed, color: "#10B981" },
+                ]);
+              }}
+            />
+            <Bar dataKey="scheduled" fill="url(#thrSched)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="completed" fill="url(#thrComp)" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
 };
 
-// ------- KPI card with sparkline -------
-const KpiCard = ({
+const Legend = ({ color, label, value, delta }) => (
+  <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.02]">
+    <span
+      className="h-2 w-2 rounded-full"
+      style={{ background: color, boxShadow: `0 0 6px ${color}` }}
+    />
+    <div className="flex flex-col leading-tight">
+      <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold">
+        {label}
+      </span>
+      <span className="text-[18px] font-extrabold text-white tabular-nums">{value}</span>
+    </div>
+    {delta !== undefined && <Delta value={delta} />}
+  </div>
+);
+
+const RingChip = ({ rate }) => {
+  const r = 16;
+  const c = 2 * Math.PI * r;
+  const dash = (rate / 100) * c;
+  return (
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#10B981]/30 bg-[#10B981]/10">
+      <svg width="40" height="40" viewBox="0 0 40 40" className="-rotate-90">
+        <circle cx="20" cy="20" r={r} stroke="#1A1D24" strokeWidth="4" fill="none" />
+        <circle
+          cx="20"
+          cy="20"
+          r={r}
+          stroke="#10B981"
+          strokeWidth="4"
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray={`${dash} ${c}`}
+          style={{ filter: "drop-shadow(0 0 6px #10B98180)" }}
+        />
+      </svg>
+      <div className="flex flex-col leading-tight">
+        <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold">
+          Completion
+        </span>
+        <span className="text-[16px] font-extrabold text-[#6EE7B7] tabular-nums">
+          {rate}%
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// -------- 2) Line chart card for Speed / Time --------
+const LineKpiCard = ({
   icon: Icon,
   title,
-  value,
+  subtitle,
+  data,
+  color,
+  headlineValue,
   unit,
   delta,
-  series,
-  color = "#00C2FF",
+  yUnit,
+  yDomain,
+  yTicks,
+  yFormatter,
   testid,
-  formatter = (v) => v,
 }) => (
   <div data-testid={testid} className={cardCls}>
-    <div className="flex items-start justify-between mb-2">
+    <div className="flex items-start justify-between mb-3">
       <div className="flex items-center gap-2">
         <span
           className="h-9 w-9 rounded-lg flex items-center justify-center"
-          style={{
-            background: `${color}14`,
-            border: `1px solid ${color}40`,
-          }}
+          style={{ background: `${color}14`, border: `1px solid ${color}40` }}
         >
           <Icon className="h-4 w-4" style={{ color }} strokeWidth={1.8} />
         </span>
         <div>
           <Eyebrow>{title}</Eyebrow>
-          <div className="text-[11px] text-slate-600 mt-0.5 font-semibold">Last 7 days</div>
+          <div className="text-[11px] text-slate-600 mt-0.5 font-semibold">{subtitle}</div>
         </div>
       </div>
-      <Delta value={delta} />
+      <div className="flex items-center gap-2">
+        <div className="text-right">
+          <div className="text-[26px] font-extrabold text-white tabular-nums leading-none">
+            {headlineValue}
+            {unit && (
+              <span className="text-[13px] text-slate-500 font-bold ml-1">{unit}</span>
+            )}
+          </div>
+          <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500 mt-1 font-semibold">
+            7-day avg
+          </div>
+        </div>
+        <Delta value={delta} />
+      </div>
     </div>
 
-    <div className="flex items-baseline gap-1.5 mt-1 mb-2">
-      <span
-        className="text-[40px] font-extrabold text-white tabular-nums leading-none"
-        data-testid={`${testid}-value`}
-      >
-        {formatter(value)}
-      </span>
-      {unit && (
-        <span className="text-[14px] font-bold text-slate-500 uppercase tracking-wider">
-          {unit}
-        </span>
-      )}
-    </div>
-
-    {/* Sparkline */}
-    <div className="flex-1 min-h-[70px] -mx-2 -mb-2">
+    <div className="flex-1 min-h-0">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={series} margin={{ top: 5, right: 6, left: 6, bottom: 0 }}>
+        <LineChart data={data} margin={{ top: 12, right: 12, left: -16, bottom: 0 }}>
           <defs>
-            <linearGradient id={`grad-${testid}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.5} />
+            <linearGradient id={`gline-${testid}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color} stopOpacity={0.4} />
               <stop offset="100%" stopColor={color} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <Tooltip
-            cursor={{ stroke: color, strokeOpacity: 0.4 }}
-            content={<ChartTooltip />}
+          <CartesianGrid stroke="#1A1D24" vertical={false} strokeDasharray="3 5" />
+          <XAxis
+            dataKey="interval"
+            tick={{ fill: "#94A3B8", fontSize: 11, fontWeight: 700 }}
+            axisLine={{ stroke: "#1A1D24" }}
+            tickLine={false}
+            padding={{ left: 4, right: 4 }}
           />
-          <Area
+          <YAxis
+            tick={{ fill: "#64748B", fontSize: 10, fontWeight: 700 }}
+            axisLine={false}
+            tickLine={false}
+            width={48}
+            tickFormatter={yFormatter || ((v) => `${v}${yUnit ? " " + yUnit : ""}`)}
+            domain={yDomain || ["auto", "auto"]}
+            ticks={yTicks}
+          />
+          <Tooltip
+            cursor={{ stroke: color, strokeOpacity: 0.4, strokeDasharray: "3 3" }}
+            content={(p) => {
+              if (!p.active || !p.payload?.length) return null;
+              const d = p.payload[0].payload;
+              return tooltipBox(d.interval, [
+                {
+                  name: title,
+                  value: typeof d.value === "number" ? d.value.toFixed(2) : d.value,
+                  unit: yUnit,
+                  color,
+                },
+              ]);
+            }}
+          />
+          <Line
             type="monotone"
             dataKey="value"
             stroke={color}
-            strokeWidth={2}
-            fill={`url(#grad-${testid})`}
-            dot={false}
-            activeDot={{ r: 4, fill: color, stroke: "#0E0F13", strokeWidth: 2 }}
+            strokeWidth={2.5}
+            dot={{ r: 4, fill: "#0E0F13", stroke: color, strokeWidth: 2 }}
+            activeDot={{ r: 6, fill: color, stroke: "#0E0F13", strokeWidth: 2 }}
           />
-        </AreaChart>
+        </LineChart>
       </ResponsiveContainer>
     </div>
   </div>
 );
 
-// ------- Chart cards -------
+// -------- 3) Existing bar/donut cards (kept from prior iteration) --------
 const BatteryChart = () => (
   <div data-testid="stat-battery" className={cardCls}>
     <div className="flex items-start justify-between mb-3">
@@ -164,7 +350,9 @@ const BatteryChart = () => (
         </span>
         <div>
           <Eyebrow>Battery Consumption</Eyebrow>
-          <div className="text-[11px] text-slate-600 mt-0.5 font-semibold">Avg per task type</div>
+          <div className="text-[11px] text-slate-600 mt-0.5 font-semibold">
+            Avg per task type
+          </div>
         </div>
       </div>
       <div className="text-right">
@@ -176,7 +364,6 @@ const BatteryChart = () => (
         </div>
       </div>
     </div>
-
     <div className="flex-1 min-h-0">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
@@ -209,7 +396,13 @@ const BatteryChart = () => (
           />
           <Tooltip
             cursor={{ fill: "#0066FF14" }}
-            content={(p) => <ChartTooltip {...p} suffix="%" />}
+            content={(p) => {
+              if (!p.active || !p.payload?.length) return null;
+              const d = p.payload[0].payload;
+              return tooltipBox(d.type, [
+                { name: "Battery", value: d.value, unit: "%", color: "#F59E0B" },
+              ]);
+            }}
           />
           <Bar dataKey="value" fill="url(#batGrad)" radius={[4, 4, 0, 0]} />
         </BarChart>
@@ -239,7 +432,6 @@ const TasksPerChargeChart = () => (
         </div>
       </div>
     </div>
-
     <div className="flex-1 min-h-0">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
@@ -271,7 +463,13 @@ const TasksPerChargeChart = () => (
           />
           <Tooltip
             cursor={{ fill: "#0066FF14" }}
-            content={(p) => <ChartTooltip {...p} suffix=" tasks" />}
+            content={(p) => {
+              if (!p.active || !p.payload?.length) return null;
+              const d = p.payload[0].payload;
+              return tooltipBox(d.robot, [
+                { name: "Tasks", value: d.value, color: "#00C2FF" },
+              ]);
+            }}
           />
           <Bar dataKey="value" fill="url(#chargeGrad)" radius={[4, 4, 0, 0]} />
         </BarChart>
@@ -293,9 +491,7 @@ const IdleTimeChart = () => (
         </div>
       </div>
     </div>
-
     <div className="flex-1 grid grid-cols-2 gap-3 min-h-0">
-      {/* Donut */}
       <div className="relative">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -315,16 +511,9 @@ const IdleTimeChart = () => (
               content={(p) => {
                 if (!p.active || !p.payload?.length) return null;
                 const d = p.payload[0].payload;
-                return (
-                  <div className="rounded-lg border border-white/10 bg-[#0A0A0B]/95 backdrop-blur-md px-3 py-2 shadow-xl">
-                    <div className="text-[10px] uppercase tracking-[0.2em] font-semibold" style={{ color: d.color }}>
-                      {d.name}
-                    </div>
-                    <div className="text-[14px] font-extrabold text-white tabular-nums">
-                      {d.value}%
-                    </div>
-                  </div>
-                );
+                return tooltipBox(d.name, [
+                  { name: "Share", value: d.value, unit: "%", color: d.color },
+                ]);
               }}
             />
           </PieChart>
@@ -338,8 +527,6 @@ const IdleTimeChart = () => (
           </div>
         </div>
       </div>
-
-      {/* Legend */}
       <div className="flex flex-col justify-center gap-2.5">
         {IDLE_TIME.byStatus.map((s) => (
           <div key={s.name} className="flex items-center gap-2">
@@ -358,72 +545,64 @@ const IdleTimeChart = () => (
   </div>
 );
 
-// ------- Main -------
+// -------- main --------
 export default function OverallStats() {
   return (
     <div data-testid="overall-stats" className="space-y-3">
-      {/* Row 1: 4 KPI cards */}
+      {/* Row 1: Throughput full width */}
       <div className="grid grid-cols-12 gap-3">
-        <div className="col-span-12 md:col-span-6 xl:col-span-3 h-[200px]">
-          <KpiCard
-            icon={ListTodo}
-            title="Total Tasks Scheduled"
-            value={TASKS_SCHEDULED.total}
-            delta={TASKS_SCHEDULED.delta}
-            series={TASKS_SCHEDULED.series}
-            color="#00C2FF"
-            testid="kpi-scheduled"
-          />
+        <div className="col-span-12 h-[320px]">
+          <ThroughputCard />
         </div>
-        <div className="col-span-12 md:col-span-6 xl:col-span-3 h-[200px]">
-          <KpiCard
-            icon={CheckCircle2}
-            title="Total Tasks Completed"
-            value={TASKS_COMPLETED.total}
-            delta={TASKS_COMPLETED.delta}
-            series={TASKS_COMPLETED.series}
-            color="#10B981"
-            testid="kpi-completed"
-            formatter={(v) => `${v}`}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6 xl:col-span-3 h-[200px]">
-          <KpiCard
+      </div>
+
+      {/* Row 2: Line charts side by side */}
+      <div className="grid grid-cols-12 gap-3">
+        <div className="col-span-12 xl:col-span-6 h-[300px]">
+          <LineKpiCard
+            testid="line-speed"
             icon={Gauge}
             title="Average Speed / Task"
-            value={AVG_SPEED.value}
+            subtitle="m/s · by 2-hour interval"
+            data={SPEED_BY_INTERVAL}
+            color="#0066FF"
+            headlineValue={AVG_SPEED.value.toFixed(2)}
             unit={AVG_SPEED.unit}
             delta={AVG_SPEED.delta}
-            series={AVG_SPEED.series}
-            color="#0066FF"
-            testid="kpi-speed"
-            formatter={(v) => v.toFixed(2)}
+            yUnit="m/s"
+            yDomain={[0.9, 1.3]}
+            yTicks={[0.9, 1.0, 1.1, 1.2, 1.3]}
+            yFormatter={(v) => v.toFixed(1)}
           />
         </div>
-        <div className="col-span-12 md:col-span-6 xl:col-span-3 h-[200px]">
-          <KpiCard
-            icon={Timer}
+        <div className="col-span-12 xl:col-span-6 h-[300px]">
+          <LineKpiCard
+            testid="line-time"
+            icon={Clock}
             title="Average Time / Task"
-            value={AVG_TIME.value}
+            subtitle="minutes · by 2-hour interval"
+            data={TIME_BY_INTERVAL}
+            color="#A855F7"
+            headlineValue={AVG_TIME.value.toFixed(1)}
             unit={AVG_TIME.unit}
             delta={AVG_TIME.delta}
-            series={AVG_TIME.series}
-            color="#A855F7"
-            testid="kpi-time"
-            formatter={(v) => v.toFixed(1)}
+            yUnit="min"
+            yDomain={[3.5, 6]}
+            yTicks={[3.5, 4, 4.5, 5, 5.5, 6]}
+            yFormatter={(v) => v.toFixed(1)}
           />
         </div>
       </div>
 
-      {/* Row 2: 3 chart cards */}
+      {/* Row 3: Battery / Charge cycle / Idle */}
       <div className="grid grid-cols-12 gap-3">
-        <div className="col-span-12 xl:col-span-4 h-[360px]">
+        <div className="col-span-12 xl:col-span-4 h-[340px]">
           <BatteryChart />
         </div>
-        <div className="col-span-12 xl:col-span-4 h-[360px]">
+        <div className="col-span-12 xl:col-span-4 h-[340px]">
           <TasksPerChargeChart />
         </div>
-        <div className="col-span-12 xl:col-span-4 h-[360px]">
+        <div className="col-span-12 xl:col-span-4 h-[340px]">
           <IdleTimeChart />
         </div>
       </div>

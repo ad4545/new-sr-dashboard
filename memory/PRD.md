@@ -169,3 +169,10 @@ Task creation composer — industrial AMR mission builder:
 - Robot Stats & Logs subsections render a polished "coming soon" placeholder card
 - New mock data: `statsMockData.js`
 - New components: `pages/StatsPage.jsx`, `components/amr/stats/OverallStats.jsx`
+
+## Iteration 10 (2026-05-18)
+**Overall Stats reworked:**
+- **Tasks Throughput** (new combined card): grouped scheduled vs completed bars per 2-hour interval; headline pills for Scheduled / Completed (with delta) + radial Completion % ring (88.3%)
+- **Average Speed / Task** and **Average Time / Task**: changed from sparklines to proper line charts with X-axis at 2-hour intervals (06–08, 08–10, … 20–22); explicit numeric Y-axis domain + ticks
+- Existing Battery / Charge cycle / Idle donut kept on row 3 (unchanged)
+- Added new mock data: INTERVALS, THROUGHPUT_BY_INTERVAL, SPEED_BY_INTERVAL, TIME_BY_INTERVAL

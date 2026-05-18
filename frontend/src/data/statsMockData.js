@@ -11,6 +11,54 @@ export const LAST_7_DAYS = [
   { day: "Sun", label: "17" },
 ];
 
+// 2-hour intervals for intra-day breakdown
+export const INTERVALS = [
+  "06–08",
+  "08–10",
+  "10–12",
+  "12–14",
+  "14–16",
+  "16–18",
+  "18–20",
+  "20–22",
+];
+
+// Tasks scheduled vs completed per 2-hour interval (today)
+export const THROUGHPUT_BY_INTERVAL = [
+  { interval: "06–08", scheduled: 28, completed: 24 },
+  { interval: "08–10", scheduled: 42, completed: 38 },
+  { interval: "10–12", scheduled: 36, completed: 33 },
+  { interval: "12–14", scheduled: 22, completed: 18 },
+  { interval: "14–16", scheduled: 45, completed: 41 },
+  { interval: "16–18", scheduled: 38, completed: 34 },
+  { interval: "18–20", scheduled: 25, completed: 22 },
+  { interval: "20–22", scheduled: 12, completed: 9 },
+];
+
+// Average speed per task by 2-hour interval (m/s)
+export const SPEED_BY_INTERVAL = [
+  { interval: "06–08", value: 1.08 },
+  { interval: "08–10", value: 1.15 },
+  { interval: "10–12", value: 1.18 },
+  { interval: "12–14", value: 1.06 },
+  { interval: "14–16", value: 1.21 },
+  { interval: "16–18", value: 1.14 },
+  { interval: "18–20", value: 1.10 },
+  { interval: "20–22", value: 1.05 },
+];
+
+// Average task duration by 2-hour interval (minutes)
+export const TIME_BY_INTERVAL = [
+  { interval: "06–08", value: 5.2 },
+  { interval: "08–10", value: 4.6 },
+  { interval: "10–12", value: 4.4 },
+  { interval: "12–14", value: 5.5 },
+  { interval: "14–16", value: 4.2 },
+  { interval: "16–18", value: 4.8 },
+  { interval: "18–20", value: 5.0 },
+  { interval: "20–22", value: 5.4 },
+];
+
 // KPI totals + per-day series (used for sparklines)
 export const TASKS_SCHEDULED = {
   total: 248,
