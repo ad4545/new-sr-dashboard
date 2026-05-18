@@ -229,6 +229,17 @@ Task creation composer — industrial AMR mission builder:
 - Extended `ROBOT_STATS` schema with: `firmware`, `payloadKg`, `soh`, `throughputTph`, `utilization`, `pathEfficiency`, `mtbfHours`, `mttrMin`, `eStops24h`, `energyPerTaskWh`, `localizationCm`
 - Extended `getRobotProfile()` to build `energyDaily` and `throughputIntraday` series
 
+## Iteration 16 (2026-05-18)
+**Logs page simplified per user feedback**
+- **Removed top 5 severity tile strip** entirely
+- Severity filtering moved to a thin inline pill row below the filter bar (with counts shown as small numbers)
+- **Rows now expand on hover** (no click required) using CSS Grid `grid-rows-[0fr] → group-hover:grid-rows-[1fr]` for smooth transition
+- **Row layout simplified**: single line with severity icon · time · robot · source · code · title · time-ago — left-border accent kept as the only severity color cue
+- Removed "Stream Live · 24h Window" indicator, "Showing X of 72 events" strip, "End of stream" footer, and Show All/Unacked toggle for minimal chrome
+- **Expanded panel compacted**: description + single inline data row (POS, θ, VEL, BAT, ZONE, TASK, ID) + optional suggested-action italic + Ack/Copy/Locate action buttons in one row (no more two-column diagnostics + sensor chips grid)
+- Sensor state chips removed (the user said the page was cluttered — they're available in deeper inspection screens if needed)
+- Net result: cleaner, scannable, glanceable log stream with hover-to-inspect behavior
+
 ## Pending / Roadmap
 - **P2**: Mini sparklines under KPI tiles on Robot Stats (7-day micro-trends)
 - **P2**: Extract shared `Tile` / `ChartCard` primitives across OverallStats and RobotStats
