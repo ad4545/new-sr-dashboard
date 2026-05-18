@@ -201,7 +201,15 @@ Task creation composer — industrial AMR mission builder:
 
 
 ## Iteration 13 (2026-05-18)
-**Robot Stats refactored to single-robot deep-dive view**
+**Robot Stats refactored to single-robot deep-dive view (final layout)**
+- Layout simplified per user feedback: **only 4 compact KPI cards at top**, then **large line charts below** in the same `LineKpiCard` style used in Overall Stats
+- Top row: Battery (with horizontal animated cell + SoH), Throughput (tasks/hr), Success Rate, Utilization (with inline MTBF/MTTR sub)
+- Charts row 1 (side-by-side): **Energy Consumption · 7 days** (line, cyan) + **Distance Travelled · 7 days** (line, green)
+- Charts row 2 (full-width): **Throughput · Today** per 2-hour interval (line, blue)
+- Each chart uses OverallStats-style header: icon chip + title + 7-day avg headline + delta pill; dotted grid; tooltip box with branded styling
+- Removed the previous donut, MTBF/MTTR/E-Stops/Localization/Path Efficiency KPI tiles to reduce visual noise
+
+### Iteration 13 (earlier draft — superseded)
 - Replaced 8-card grid with stateful single-robot page driven by Shadcn `<Select>` dropdown (lists all 8 AMRs with status dot indicator)
 - **Horizontal battery cell** (compact, inside a card alongside other KPI tiles):
   - Liquid fills left → right, vertical wavy surface on the right edge (front + slow translucent back wave)
