@@ -2,8 +2,8 @@
 // Pure mock data, deterministic per page-load.
 
 export const LOG_SEVERITIES = [
-  { id: "info", label: "Normal", color: "#94A3B8" },
-  { id: "warn", label: "Warning", color: "#F59E0B" },
+  { id: "info", label: "Normal", color: "#F8FAFC" },
+  { id: "warn", label: "Warning", color: "#FACC15" },
   { id: "error", label: "Error", color: "#EF4444" },
 ];
 
@@ -246,7 +246,7 @@ const _round = (n, d = 2) => +n.toFixed(d);
 
 const NOW = Date.now();
 
-// Build a fixed list: 70 normal/info events + 1 warning + 1 error
+// Build a fixed list: 7 visible events using normal, warning and error states.
 const _gen = () => {
   const r = _rng(SEED);
   const infoTemplates = TEMPLATES.filter((t) => t.severity === "info");
@@ -292,18 +292,20 @@ const _gen = () => {
   };
 
   const out = [];
-  // 70 normal events spread across last 24h
-  for (let i = 0; i < 70; i++) {
-    const tmpl = infoTemplates[Math.floor(r() * infoTemplates.length)];
-    const hoursAgo = Math.pow(r(), 1.6) * 24;
-    out.push(buildEvent(tmpl, hoursAgo, i));
-  }
-  // 1 warning — placed about 2 hours ago (recent enough to be visible)
-  const warnTmpl = warnTemplates[Math.floor(r() * warnTemplates.length)];
-  out.push(buildEvent(warnTmpl, 2 + r() * 1.5, 200));
-  // 1 error — placed in the very recent window so it surfaces near the top
-  const errTmpl = errorTemplates[Math.floor(r() * errorTemplates.length)];
-  out.push(buildEvent(errTmpl, 0.2 + r() * 0.8, 201));
+  const schedule = [
+    { templates: errorTemplates, hoursAgo: 0.25 },
+    { templates: warnTemplates, hoursAgo: 0.8 },
+    { templates: infoTemplates, hoursAgo: 1.4 },
+    { templates: infoTemplates, hoursAgo: 2.2 },
+    { templates: warnTemplates, hoursAgo: 3.1 },
+    { templates: infoTemplates, hoursAgo: 5.5 },
+    { templates: errorTemplates, hoursAgo: 7.4 },
+  ];
+
+  schedule.forEach((entry, index) => {
+    const tmpl = entry.templates[Math.floor(r() * entry.templates.length)];
+    out.push(buildEvent(tmpl, entry.hoursAgo, index));
+  });
 
   out.sort((a, b) => b.timestamp - a.timestamp);
   return out;

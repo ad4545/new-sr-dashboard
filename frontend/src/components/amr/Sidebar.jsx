@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   ListTodo,
@@ -26,7 +26,7 @@ const NAV = [
   { to: "/map", label: "Live Map", icon: Map, testid: "nav-map" },
   { to: "/video", label: "Video Stream", icon: Video, testid: "nav-video" },
   { to: "/charging", label: "Charging", icon: BatteryCharging, testid: "nav-charging" },
-  { to: "/stats", label: "Stats", icon: BarChart3, testid: "nav-stats" },
+  { to: "/stats/overall", label: "Stats", icon: BarChart3, testid: "nav-stats" },
   { to: "/history", label: "History", icon: History, testid: "nav-history" },
   { to: "/alerts", label: "Alerts", icon: Bell, testid: "nav-alerts" },
   { to: "/safety", label: "Safety", icon: ShieldCheck, testid: "nav-safety" },
@@ -36,6 +36,7 @@ export const SIDEBAR_W = { expanded: 228, collapsed: 76 };
 
 export const Sidebar = ({ collapsed, onCollapseChange }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { pathname } = useLocation();
 
   // Force expanded on mobile-open (full overlay)
   const effectiveCollapsed = collapsed && !mobileOpen;
@@ -134,33 +135,37 @@ export const Sidebar = ({ collapsed, onCollapseChange }) => {
                   data-testid={item.testid}
                   onClick={() => setMobileOpen(false)}
                   title={effectiveCollapsed ? item.label : undefined}
-                  className={({ isActive }) =>
-                    [
+                  className={({ isActive }) => {
+                    const active = item.testid === "nav-stats" ? pathname.startsWith("/stats") : isActive;
+                    return [
                       "group relative flex items-center rounded-lg transition-all duration-200",
                       effectiveCollapsed ? "justify-center h-11 w-11 mx-auto" : "gap-3 px-3 py-2.5 text-[14px]",
-                      isActive
+                      active
                         ? "bg-gradient-to-r from-[#0066FF]/22 to-transparent text-white"
                         : "text-slate-400 hover:text-white hover:bg-white/[0.04]",
-                    ].join(" ")
-                  }
+                    ].join(" ");
+                  }}
                 >
-                  {({ isActive }) => (
-                    <>
-                      {isActive && !effectiveCollapsed && (
-                        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-full bg-[#00C2FF] shadow-[0_0_8px_#00C2FF]" />
-                      )}
-                      {isActive && effectiveCollapsed && (
-                        <span className="absolute inset-0 rounded-lg ring-1 ring-[#00C2FF]/40" />
-                      )}
-                      <item.icon
-                        className={`h-[18px] w-[18px] shrink-0 ${
-                          isActive ? "text-[#00C2FF]" : "text-slate-500 group-hover:text-slate-300"
-                        }`}
-                        strokeWidth={1.6}
-                      />
-                      {!effectiveCollapsed && <span className="font-semibold">{item.label}</span>}
-                    </>
-                  )}
+                  {({ isActive }) => {
+                    const active = item.testid === "nav-stats" ? pathname.startsWith("/stats") : isActive;
+                    return (
+                      <>
+                        {active && !effectiveCollapsed && (
+                          <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-full bg-[#00C2FF] shadow-[0_0_8px_#00C2FF]" />
+                        )}
+                        {active && effectiveCollapsed && (
+                          <span className="absolute inset-0 rounded-lg ring-1 ring-[#00C2FF]/40" />
+                        )}
+                        <item.icon
+                          className={`h-[18px] w-[18px] shrink-0 ${
+                            active ? "text-[#00C2FF]" : "text-slate-500 group-hover:text-slate-300"
+                          }`}
+                          strokeWidth={1.6}
+                        />
+                        {!effectiveCollapsed && <span className="font-semibold">{item.label}</span>}
+                      </>
+                    );
+                  }}
                 </NavLink>
               </li>
             ))}

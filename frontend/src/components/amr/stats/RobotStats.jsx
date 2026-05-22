@@ -3,6 +3,11 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
   Tooltip,
   XAxis,
   YAxis,
@@ -14,7 +19,6 @@ import {
   Activity,
   Gauge,
   Zap,
-  Route as RouteIcon,
   TrendingUp,
   TrendingDown,
   BatteryCharging,
@@ -88,143 +92,83 @@ const tooltipBox = (label, rows) => (
 );
 
 // ----------------------------------------------------------------------------
-// Horizontal Battery Cell — liquid fills left → right with vertical wave surface
+// Compact header battery meter
 // ----------------------------------------------------------------------------
-const HorizontalBatteryCell = ({ percent, status, soh }) => {
+const CompactBatteryMeter = ({ percent, status }) => {
   const isService = status === "maintenance";
-  const offline = isService;
-  const color = offline
+  const color = isService
     ? "#475569"
     : percent > 60
       ? "#10B981"
       : percent > 30
         ? "#F59E0B"
         : "#EF4444";
-  const glow = `${color}55`;
-  const fillPercent = offline ? 4 : Math.max(percent, 6);
+  const fillPercent = Math.max(percent, 6);
 
   return (
     <div
-      data-testid="battery-cell-horizontal"
-      className="relative flex items-center w-full"
-      style={{ filter: offline ? "saturate(0.4) opacity(0.7)" : "none" }}
+      data-testid="header-battery-meter"
+      className="inline-flex h-9 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-2.5"
+      style={{ filter: isService ? "saturate(0.45) opacity(0.78)" : "none" }}
     >
-      {/* Battery body */}
-      <div
-        className="relative flex-1 h-[70px] rounded-[14px] border-2 border-white/15 overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0.04) 100%)",
-          boxShadow: `inset 0 2px 6px rgba(255,255,255,0.06), inset 0 -2px 8px rgba(0,0,0,0.5), 0 0 22px ${glow}`,
-        }}
-      >
-        {/* Cell ridge marks */}
-        <span className="absolute top-[10%] bottom-[10%] left-[20%] w-px bg-white/[0.05]" />
-        <span className="absolute top-[10%] bottom-[10%] left-[40%] w-px bg-white/[0.05]" />
-        <span className="absolute top-[10%] bottom-[10%] left-[60%] w-px bg-white/[0.05]" />
-        <span className="absolute top-[10%] bottom-[10%] left-[80%] w-px bg-white/[0.05]" />
-
-        {/* Liquid fill (left → right) */}
-        <div
-          className="absolute top-0 bottom-0 left-0 transition-[width] duration-700 ease-out overflow-hidden"
-          style={{
-            width: `${fillPercent}%`,
-            background: `linear-gradient(90deg, ${color}EE 0%, ${color}FF 100%)`,
-          }}
-        >
-          <svg
-            className="absolute -right-[10px] top-0 h-[200%] w-[20px] animate-amr-wave-vert pointer-events-none"
-            viewBox="0 0 20 200"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M12,0 Q2,12.5 12,25 T12,50 T12,75 T12,100 T12,125 T12,150 T12,175 T12,200 L20,200 L20,0 Z"
-              fill={color}
-            />
-          </svg>
-          <svg
-            className="absolute -right-[14px] top-0 h-[200%] w-[20px] animate-amr-wave-vert-slow pointer-events-none opacity-40"
-            viewBox="0 0 20 200"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M10,0 Q4,12.5 10,25 T10,50 T10,75 T10,100 T10,125 T10,150 T10,175 T10,200 L20,200 L20,0 Z"
-              fill="#FFFFFF"
-            />
-          </svg>
-          <div className="absolute inset-x-0 top-0 h-2.5 bg-gradient-to-b from-white/25 to-transparent" />
-          {!offline && (
-            <>
-              <span
-                className="absolute bottom-3 left-3 h-1.5 w-1.5 rounded-full bg-white/55 animate-amr-bubble-h"
-                style={{ animationDelay: "0s" }}
-              />
-              <span
-                className="absolute bottom-5 left-8 h-1 w-1 rounded-full bg-white/40 animate-amr-bubble-h"
-                style={{ animationDelay: "0.7s" }}
-              />
-              <span
-                className="absolute bottom-2 left-14 h-1 w-1 rounded-full bg-white/40 animate-amr-bubble-h"
-                style={{ animationDelay: "1.4s" }}
-              />
-            </>
-          )}
+      <div className="relative flex h-[18px] w-[44px] items-center">
+        <div className="relative h-full flex-1 overflow-hidden rounded-[4px] border border-white/20 bg-black/25">
+          <span className="absolute inset-y-[3px] left-1/4 w-px bg-white/10" />
+          <span className="absolute inset-y-[3px] left-1/2 w-px bg-white/10" />
+          <span className="absolute inset-y-[3px] left-3/4 w-px bg-white/10" />
+          <span
+            className="absolute inset-y-0 left-0 transition-[width] duration-500"
+            style={{
+              width: `${fillPercent}%`,
+              background: `linear-gradient(90deg, ${color}CC, ${color})`,
+              boxShadow: `0 0 10px ${color}66`,
+            }}
+          />
+          <span className="absolute inset-x-0 top-0 h-1 bg-white/20" />
         </div>
-
-        {/* Centered % + SoH */}
-        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <div className="flex items-baseline gap-2">
-            <div className="text-[26px] font-extrabold text-white tabular-nums leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              {offline ? "—" : `${percent}`}
-            </div>
-            <div className="text-[13px] font-bold text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              %
-            </div>
-            <div className="text-[9px] uppercase tracking-[0.18em] text-white/70 font-bold ml-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-              SoH {offline ? "—" : `${soh}%`}
-            </div>
-          </div>
-        </div>
+        <span className="h-[9px] w-[4px] rounded-r-sm border border-l-0 border-white/20 bg-white/10" />
       </div>
-
-      {/* Cap on right */}
-      <div
-        className="ml-[3px] w-[8px] h-[26px] rounded-r-md border border-white/15 border-l-0"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.05) 100%)",
-        }}
-      />
+      <span className="text-[12px] font-extrabold tabular-nums text-white">
+        {percent}
+        <span className="ml-0.5 text-[10px] font-bold text-slate-500">%</span>
+      </span>
     </div>
   );
 };
 
 // ----------------------------------------------------------------------------
-// Top KPI Card (compact)
+// Slim current-day KPI Card
 // ----------------------------------------------------------------------------
-const KpiTile = ({ icon: Icon, color, label, value, unit, sub, delta }) => (
-  <div data-testid={`kpi-${label.replace(/\s+/g, "-").toLowerCase()}`} className={cardCls}>
-    <div className="flex items-center justify-between mb-3">
+const KpiTile = ({ icon: Icon, color, label, value, unit, sub }) => (
+  <div
+    data-testid={`kpi-${label.replace(/\s+/g, "-").toLowerCase()}`}
+    className="h-full min-h-[104px] rounded-xl border border-white/[0.1] bg-[#15171D] px-4 py-3 shadow-[0_4px_18px_rgba(0,0,0,0.28)]"
+  >
+    <div className="flex h-full items-center gap-3">
       <span
-        className="h-9 w-9 rounded-lg flex items-center justify-center"
-        style={{ background: `${color}14`, border: `1px solid ${color}40` }}
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+        style={{ background: `${color}14`, border: `1px solid ${color}35` }}
       >
-        <Icon className="h-4 w-4" style={{ color }} strokeWidth={1.8} />
+        <Icon className="h-4 w-4" style={{ color }} strokeWidth={1.9} />
       </span>
-      {delta !== undefined && <Delta value={delta} />}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-2">
+          <div className="text-[10px] font-bold uppercase leading-snug tracking-[0.16em] text-slate-500">
+            {label}
+          </div>
+          <span className="shrink-0 rounded-md border border-white/[0.08] bg-white/[0.03] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">
+            Today
+          </span>
+        </div>
+        <div className="mt-2 flex items-baseline gap-1.5">
+          <span className="text-[25px] font-extrabold leading-none text-white tabular-nums">
+            {value}
+          </span>
+          {unit && <span className="text-[12px] font-bold text-slate-500">{unit}</span>}
+        </div>
+        {sub && <div className="mt-1 text-[11px] font-semibold text-slate-500">{sub}</div>}
+      </div>
     </div>
-    <Eyebrow>{label}</Eyebrow>
-    <div className="mt-1 flex items-baseline gap-1.5">
-      <span className="text-[28px] font-extrabold text-white tabular-nums leading-none">
-        {value}
-      </span>
-      {unit && (
-        <span className="text-[13px] font-bold text-slate-500">{unit}</span>
-      )}
-    </div>
-    {sub && (
-      <div className="mt-2 text-[11px] text-slate-500 font-semibold">{sub}</div>
-    )}
   </div>
 );
 
@@ -243,6 +187,8 @@ const LineKpiCard = ({
   yUnit,
   xKey = "day",
   testid,
+  summaryLabel = "7-day avg",
+  hideSummary = false,
 }) => (
   <div data-testid={testid} className={cardCls}>
     <div className="flex items-start justify-between mb-3">
@@ -258,20 +204,22 @@ const LineKpiCard = ({
           <div className="text-[11px] text-slate-600 mt-0.5 font-semibold">{subtitle}</div>
         </div>
       </div>
-      <div className="flex items-center gap-2">
-        <div className="text-right">
-          <div className="text-[26px] font-extrabold text-white tabular-nums leading-none">
-            {headlineValue}
-            {unit && (
-              <span className="text-[13px] text-slate-500 font-bold ml-1">{unit}</span>
-            )}
+      {!hideSummary && (
+        <div className="flex items-center gap-2">
+          <div className="text-right">
+            <div className="text-[26px] font-extrabold text-white tabular-nums leading-none">
+              {headlineValue}
+              {unit && (
+                <span className="text-[13px] text-slate-500 font-bold ml-1">{unit}</span>
+              )}
+            </div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500 mt-1 font-semibold">
+              {summaryLabel}
+            </div>
           </div>
-          <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500 mt-1 font-semibold">
-            7-day avg
-          </div>
+          {delta !== undefined && <Delta value={delta} />}
         </div>
-        {delta !== undefined && <Delta value={delta} />}
-      </div>
+      )}
     </div>
 
     <div className="flex-1 min-h-0">
@@ -323,6 +271,218 @@ const LineKpiCard = ({
 );
 
 // ----------------------------------------------------------------------------
+// Workday utilization pie card
+// ----------------------------------------------------------------------------
+const UtilizationPieCard = ({ data, productiveHours, productivePercent }) => (
+  <div data-testid="chart-robot-utilization" className={cardCls}>
+    <div className="mb-3 flex items-start justify-between gap-3">
+      <div className="flex items-center gap-2">
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#10B98140] bg-[#10B98114]">
+          <Activity className="h-4 w-4 text-[#10B981]" strokeWidth={1.8} />
+        </span>
+        <div>
+          <Eyebrow>Robot Utilization</Eyebrow>
+          <div className="mt-0.5 text-[11px] font-semibold text-slate-600">
+            8-hour workday allocation
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="grid flex-1 min-h-0 grid-cols-1 items-center gap-4 md:grid-cols-[minmax(0,1.1fr)_minmax(180px,0.9fr)]">
+      <div className="relative h-full min-h-[210px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Tooltip
+              content={(p) => {
+                if (!p.active || !p.payload?.length) return null;
+                const d = p.payload[0].payload;
+                return tooltipBox("8-hour workday", [
+                  {
+                    name: d.name,
+                    value: d.hours.toFixed(1),
+                    unit: "h",
+                    color: d.color,
+                  },
+                ]);
+              }}
+            />
+            <Pie
+              data={data}
+              dataKey="hours"
+              nameKey="name"
+              innerRadius="58%"
+              outerRadius="82%"
+              paddingAngle={3}
+              stroke="#15171D"
+              strokeWidth={4}
+              isAnimationActive={false}
+            >
+              {data.map((entry) => (
+                <Cell key={entry.name} fill={entry.color} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-[30px] font-extrabold leading-none text-white tabular-nums">
+              {productiveHours.toFixed(1)}
+              <span className="ml-1 text-[13px] font-bold text-slate-500">h</span>
+            </div>
+            <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
+              productive
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
+            Utilization Rate
+          </div>
+          <div className="mt-1 text-[24px] font-extrabold leading-none text-white tabular-nums">
+            {productivePercent}
+            <span className="ml-1 text-[12px] font-bold text-slate-500">%</span>
+          </div>
+        </div>
+        {data.map((item) => (
+          <div
+            key={item.name}
+            className="flex items-center justify-between gap-3 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2"
+          >
+            <div className="flex min-w-0 items-center gap-2">
+              <span
+                className="h-2.5 w-2.5 shrink-0 rounded-full"
+                style={{ background: item.color, boxShadow: `0 0 8px ${item.color}66` }}
+              />
+              <span className="truncate text-[12px] font-bold text-slate-300">{item.name}</span>
+            </div>
+            <div className="text-right text-[13px] font-extrabold text-white tabular-nums">
+              {item.hours.toFixed(1)}
+              <span className="ml-1 text-[10px] font-bold text-slate-500">h</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// ----------------------------------------------------------------------------
+// Task throughput bar card
+// ----------------------------------------------------------------------------
+const ThroughputBarCard = ({ data }) => {
+  const completedTasks = data.reduce((sum, d) => sum + d.completed, 0);
+  const failedTasks = data.reduce((sum, d) => sum + d.failed, 0);
+
+  return (
+    <div data-testid="chart-throughput-intraday" className={cardCls}>
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#0066FF40] bg-[#0066FF14]">
+            <Timer className="h-4 w-4 text-[#0066FF]" strokeWidth={1.8} />
+          </span>
+          <div>
+            <Eyebrow>Task Throughput · Today</Eyebrow>
+            <div className="mt-0.5 text-[11px] font-semibold text-slate-600">
+              Completed and failed tasks per 2-hour interval
+            </div>
+          </div>
+        </div>
+        <div className="hidden items-center gap-2 sm:flex">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-right">
+            <div className="text-[22px] font-extrabold leading-none text-white tabular-nums">
+              {completedTasks}
+            </div>
+            <div className="mt-1 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">
+              completed
+            </div>
+          </div>
+          <div className="rounded-xl border border-[#EF444440] bg-[#EF444414] px-3 py-2 text-right">
+            <div className="text-[22px] font-extrabold leading-none text-white tabular-nums">
+              {failedTasks}
+            </div>
+            <div className="mt-1 text-[9px] font-bold uppercase tracking-[0.18em] text-[#EF4444]">
+              failed
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 18, right: 14, left: -18, bottom: 0 }}>
+            <defs>
+              <linearGradient id="throughputBarFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#00C2FF" stopOpacity={1} />
+                <stop offset="100%" stopColor="#0066FF" stopOpacity={0.72} />
+              </linearGradient>
+              <linearGradient id="failedBarFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#F87171" stopOpacity={1} />
+                <stop offset="100%" stopColor="#EF4444" stopOpacity={0.74} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid stroke="#1A1D24" vertical={false} strokeDasharray="3 5" />
+            <XAxis
+              dataKey="interval"
+              tick={{ fill: "#94A3B8", fontSize: 11, fontWeight: 700 }}
+              axisLine={{ stroke: "#1A1D24" }}
+              tickLine={false}
+            />
+            <YAxis
+              allowDecimals={false}
+              tick={{ fill: "#64748B", fontSize: 10, fontWeight: 700 }}
+              axisLine={false}
+              tickLine={false}
+              width={48}
+            />
+            <Tooltip
+              cursor={{ fill: "rgba(0,102,255,0.08)" }}
+              content={(p) => {
+                if (!p.active || !p.payload?.length) return null;
+                const d = p.payload[0].payload;
+                return tooltipBox(d.interval, [
+                  {
+                    name: "Completed Tasks",
+                    value: d.completed,
+                    unit: "tasks",
+                    color: "#00C2FF",
+                  },
+                  {
+                    name: "Failed Tasks",
+                    value: d.failed,
+                    unit: "tasks",
+                    color: "#EF4444",
+                  },
+                ]);
+              }}
+            />
+            <Bar
+              dataKey="completed"
+              stackId="tasks"
+              fill="url(#throughputBarFill)"
+              radius={[0, 0, 3, 3]}
+              maxBarSize={54}
+              isAnimationActive={false}
+            />
+            <Bar
+              dataKey="failed"
+              stackId="tasks"
+              fill="url(#failedBarFill)"
+              radius={[8, 8, 0, 0]}
+              maxBarSize={54}
+              isAnimationActive={false}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+};
+
+// ----------------------------------------------------------------------------
 // Meta chip
 // ----------------------------------------------------------------------------
 const MetaChip = ({ label, value }) => (
@@ -343,21 +503,52 @@ export default function RobotStats() {
   const [robotId, setRobotId] = useState(ROBOT_STATS[0].id);
   const profile = useMemo(() => getRobotProfile(robotId), [robotId]);
   const s = statusStyle[profile.status];
+  const totalTasksToday = profile.successTasks + profile.failedTasks;
+  const avgTasksPerCharge =
+    profile.charges > 0 ? +(totalTasksToday / profile.charges).toFixed(1) : null;
+  const batteryConsumptionIntervals = useMemo(
+    () =>
+      profile.throughputIntraday
+        .filter((d) => ["08–10", "10–12", "12–14", "14–16", "16–18", "18–20"].includes(d.interval))
+        .map((d) => ({
+          interval: d.interval,
+          value: +(d.value * profile.batteryPerCycle).toFixed(1),
+        })),
+    [profile]
+  );
+  const totalBatteryConsumed = +batteryConsumptionIntervals
+    .reduce((sum, d) => sum + d.value, 0)
+    .toFixed(1);
+  const throughputByOutcome = useMemo(() => {
+    const intervals = profile.throughputIntraday;
+    const failedSlots = intervals.map(() => 0);
 
-  // 7-day energy avg
-  const energyAvg = profile.energyDaily.length
-    ? Math.round(
-        profile.energyDaily.reduce((a, d) => a + d.value, 0) /
-          profile.energyDaily.length
-      )
-    : 0;
-  // 7-day distance avg
-  const distanceAvg = profile.distanceDaily.length
-    ? +(
-        profile.distanceDaily.reduce((a, d) => a + d.value, 0) /
-        profile.distanceDaily.length
-      ).toFixed(1)
-    : 0;
+    for (let i = 0; i < profile.failedTasks; i += 1) {
+      const slot = (i * 3 + robotId.length) % intervals.length;
+      failedSlots[slot] += 1;
+    }
+
+    return intervals.map((d, index) => ({
+      interval: d.interval,
+      completed: d.value,
+      failed: failedSlots[index],
+    }));
+  }, [profile, robotId]);
+  const utilizationData = useMemo(() => {
+    const statusValue = (name) =>
+      profile.statusBreakdown.find((item) => item.name === name)?.value ?? 0;
+    const productive = statusValue("Active");
+    const idle = profile.status === "maintenance" ? 100 : statusValue("Idle");
+    const charging = statusValue("Charging");
+
+    return [
+      { name: "Productive Time", hours: +((productive / 100) * 8).toFixed(1), color: "#10B981" },
+      { name: "Idle Time", hours: +((idle / 100) * 8).toFixed(1), color: "#64748B" },
+      { name: "Charging Time", hours: +((charging / 100) * 8).toFixed(1), color: "#F59E0B" },
+    ];
+  }, [profile]);
+  const productiveHours = utilizationData[0].hours;
+  const productivePercent = Math.round((productiveHours / 8) * 100);
 
   return (
     <div data-testid="robot-stats" className="flex flex-col gap-3">
@@ -372,11 +563,11 @@ export default function RobotStats() {
           </div>
           <div className="min-w-0">
             <Eyebrow>Robot Profile</Eyebrow>
-            <div className="flex items-center gap-2 mt-0.5">
+            <div className="flex flex-wrap items-center gap-2 mt-0.5">
               <Select value={robotId} onValueChange={setRobotId}>
                 <SelectTrigger
                   data-testid="robot-select-trigger"
-                  className="h-9 w-[240px] bg-white/[0.03] border-white/10 text-white text-[14px] font-bold focus:ring-[#0066FF]/40"
+                  className="h-9 w-[220px] sm:w-[240px] bg-white/[0.03] border-white/10 text-white text-[14px] font-bold focus:ring-[#0066FF]/40"
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -421,6 +612,7 @@ export default function RobotStats() {
                 />
                 {s.label}
               </span>
+              <CompactBatteryMeter percent={profile.battery} status={profile.status} />
             </div>
           </div>
         </div>
@@ -438,40 +630,14 @@ export default function RobotStats() {
 
       {/* ====== Top KPI Row — only 4 cards ====== */}
       <div className="grid grid-cols-12 gap-3">
-        {/* Battery card */}
-        <div className="col-span-12 md:col-span-6 xl:col-span-3">
-          <div className={cardCls} data-testid="kpi-battery">
-            <div className="flex items-center justify-between mb-3">
-              <span
-                className="h-9 w-9 rounded-lg flex items-center justify-center"
-                style={{ background: "#10B98114", border: "1px solid #10B98140" }}
-              >
-                <BatteryCharging className="h-4 w-4" style={{ color: "#10B981" }} strokeWidth={1.8} />
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-bold">
-                {profile.charges} cycles
-              </span>
-            </div>
-            <Eyebrow>Battery</Eyebrow>
-            <div className="mt-3 flex-1 flex items-center">
-              <HorizontalBatteryCell
-                percent={profile.battery}
-                status={profile.status}
-                soh={profile.soh}
-              />
-            </div>
-          </div>
-        </div>
-
         <div className="col-span-12 md:col-span-6 xl:col-span-3">
           <KpiTile
-            icon={Activity}
-            color="#00C2FF"
-            label="Throughput"
-            value={profile.throughputTph.toFixed(1)}
-            unit="tasks/hr"
-            sub={`${profile.successTasks + profile.failedTasks} tasks · 7d`}
-            delta={+4}
+            icon={BatteryCharging}
+            color="#F59E0B"
+            label="Avg Battery Consumption per Task"
+            value={profile.batteryPerCycle.toFixed(1)}
+            unit="%"
+            sub={`${totalTasksToday} tasks processed`}
           />
         </div>
         <div className="col-span-12 md:col-span-6 xl:col-span-3">
@@ -479,21 +645,29 @@ export default function RobotStats() {
             icon={CheckCircle2}
             color="#10B981"
             label="Success Rate"
-            value={`${profile.successRate}`}
+            value={profile.successRate}
             unit="%"
-            sub={`${profile.successTasks} ok · ${profile.failedTasks} failed`}
-            delta={profile.successRate >= 95 ? +2 : -1}
+            sub={`${profile.successTasks} successful · ${profile.failedTasks} failed`}
+          />
+        </div>
+        <div className="col-span-12 md:col-span-6 xl:col-span-3">
+          <KpiTile
+            icon={Activity}
+            color="#00C2FF"
+            label="Avg Tasks per Charge Cycle"
+            value={avgTasksPerCharge ?? "--"}
+            unit={avgTasksPerCharge === null ? "" : "tasks"}
+            sub={`${profile.charges} charge cycles`}
           />
         </div>
         <div className="col-span-12 md:col-span-6 xl:col-span-3">
           <KpiTile
             icon={Gauge}
             color="#A855F7"
-            label="Utilization"
-            value={`${profile.utilization}`}
-            unit="%"
-            sub={`MTBF ${profile.mtbfHours}h · MTTR ${profile.mttrMin}m`}
-            delta={profile.utilization >= 70 ? +6 : -3}
+            label="Average Speed"
+            value={profile.avgSpeed.toFixed(2)}
+            unit="m/s"
+            sub="Today average"
           />
         </div>
       </div>
@@ -502,46 +676,28 @@ export default function RobotStats() {
       <div className="grid grid-cols-12 gap-3">
         <div className="col-span-12 xl:col-span-6 h-[320px]">
           <LineKpiCard
-            testid="chart-energy-daily"
+            testid="chart-battery-consumption-interval"
             icon={Zap}
-            title="Energy Consumption"
-            subtitle="Wh consumed · last 7 days"
-            data={profile.energyDaily}
-            color="#00C2FF"
-            headlineValue={energyAvg}
-            unit="Wh"
-            yUnit=""
-            delta={-3}
+            title="Battery Consumption · Today"
+            subtitle="Total battery consumed per 2-hour interval · 08:00-20:00"
+            data={batteryConsumptionIntervals}
+            color="#F59E0B"
+            headlineValue={totalBatteryConsumed}
+            unit="%"
+            yUnit="%"
+            xKey="interval"
+            hideSummary
           />
         </div>
         <div className="col-span-12 xl:col-span-6 h-[320px]">
-          <LineKpiCard
-            testid="chart-distance-daily"
-            icon={RouteIcon}
-            title="Distance Travelled"
-            subtitle="km per day · last 7 days"
-            data={profile.distanceDaily}
-            color="#10B981"
-            headlineValue={distanceAvg}
-            unit="km"
-            yUnit="km"
-            delta={+5}
+          <UtilizationPieCard
+            data={utilizationData}
+            productiveHours={productiveHours}
+            productivePercent={productivePercent}
           />
         </div>
         <div className="col-span-12 h-[320px]">
-          <LineKpiCard
-            testid="chart-throughput-intraday"
-            icon={Timer}
-            title="Throughput · Today"
-            subtitle="Tasks completed per 2-hour interval"
-            data={profile.throughputIntraday}
-            color="#0066FF"
-            headlineValue={profile.throughputTph.toFixed(1)}
-            unit="tasks/hr"
-            yUnit=""
-            xKey="interval"
-            delta={+4}
-          />
+          <ThroughputBarCard data={throughputByOutcome} />
         </div>
       </div>
     </div>

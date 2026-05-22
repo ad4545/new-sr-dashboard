@@ -74,12 +74,13 @@ const SourcePill = ({ source }) => {
 };
 
 // ---------------------------------------------------------------------------
-// Log Row (expand-on-hover, neutral by default, color only for warn/error)
+// Log Row (expand-on-hover, severity color coded)
 // ---------------------------------------------------------------------------
 const LogRow = ({ log }) => {
   const sev = SEVERITY_MAP[log.severity];
   const Icon = SEVERITY_ICONS[log.severity];
   const isNormal = log.severity === "info";
+  const isWarning = log.severity === "warn";
 
   return (
     <div
@@ -87,21 +88,19 @@ const LogRow = ({ log }) => {
       className={[
         "group relative rounded-md border bg-[#15171D]/60 hover:bg-[#15171D] transition-all overflow-hidden",
         isNormal
-          ? "border-white/[0.05] hover:border-white/[0.14]"
-          : "border-white/[0.08] hover:border-white/[0.2]",
+          ? "border-white/[0.12] hover:border-white/[0.28]"
+          : isWarning
+            ? "border-[#FACC15]/20 hover:border-[#FACC15]/45"
+            : "border-[#EF4444]/20 hover:border-[#EF4444]/45",
       ].join(" ")}
-      style={
-        isNormal
-          ? undefined
-          : { boxShadow: `inset 3px 0 0 0 ${sev.color}` }
-      }
+      style={{ boxShadow: `inset 3px 0 0 0 ${sev.color}` }}
     >
       {/* Header row */}
       <div className="flex items-center gap-3 px-4 py-2.5 text-left">
         {/* Severity icon — muted for normal, colored for warn/error */}
         <Icon
           className="h-[14px] w-[14px] shrink-0"
-          style={{ color: isNormal ? "#475569" : sev.color }}
+          style={{ color: sev.color }}
           strokeWidth={1.8}
         />
 
@@ -131,7 +130,7 @@ const LogRow = ({ log }) => {
             className={[
               "text-[13px] truncate transition-colors tracking-[-0.005em]",
               isNormal
-                ? "text-slate-300 font-medium group-hover:text-white"
+                ? "text-white font-medium"
                 : "text-white font-semibold",
             ].join(" ")}
           >
@@ -250,7 +249,6 @@ const ActionButton = ({ icon: Icon, children, onClick, active, testid }) => (
 // ---------------------------------------------------------------------------
 const SeverityFilterPill = ({ severity, count, active, onClick }) => {
   const Icon = SEVERITY_ICONS[severity.id];
-  const isNormal = severity.id === "info";
   return (
     <button
       data-testid={`severity-pill-${severity.id}`}
@@ -258,13 +256,11 @@ const SeverityFilterPill = ({ severity, count, active, onClick }) => {
       className={[
         "h-7 px-2.5 rounded-md flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.08em] transition-all border",
         active
-          ? isNormal
-            ? "text-slate-200 border-white/20 bg-white/[0.06]"
-            : "text-white"
+          ? "text-white"
           : "text-slate-500 border-white/[0.06] bg-transparent hover:text-slate-300 hover:border-white/15",
       ].join(" ")}
       style={
-        active && !isNormal
+        active
           ? {
               color: severity.color,
               background: `${severity.color}14`,

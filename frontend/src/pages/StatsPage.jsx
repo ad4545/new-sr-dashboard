@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar, { SIDEBAR_W } from "../components/amr/Sidebar";
 import TopHeader from "../components/amr/TopHeader";
@@ -10,9 +10,9 @@ import { BarChart3, Bot, ScrollText, Calendar, Download } from "lucide-react";
 const STORAGE_KEY = "amr-sidebar-collapsed";
 
 const SUBNAV = [
-  { to: "overall", label: "Overall Stats", icon: BarChart3, testid: "tab-overall" },
-  { to: "robots", label: "Robot Stats", icon: Bot, testid: "tab-robots" },
-  { to: "logs", label: "Logs", icon: ScrollText, testid: "tab-logs" },
+  { to: "/stats/overall", label: "Overall Stats", icon: BarChart3, testid: "tab-overall" },
+  { to: "/stats/robots", label: "Robot Stats", icon: Bot, testid: "tab-robots" },
+  { to: "/stats/logs", label: "Logs", icon: ScrollText, testid: "tab-logs" },
 ];
 
 export default function StatsPage() {
@@ -111,10 +111,11 @@ export default function StatsPage() {
         {/* Content */}
         <div className="px-[10px] md:px-[12px] py-3 flex-1">
           <Routes>
-            <Route index element={<Navigate to="overall" replace />} />
+            <Route index element={<Navigate to="/stats/overall" replace />} />
             <Route path="overall" element={<OverallStats />} />
             <Route path="robots" element={<RobotStats />} />
             <Route path="logs" element={<SystemLogs />} />
+            <Route path="*" element={<Navigate to="/stats/overall" replace />} />
           </Routes>
 
           <div className="flex items-center justify-between px-1 pt-4 pb-2 text-[11px] uppercase tracking-[0.2em] text-slate-600 border-t border-white/5 font-semibold mt-3">

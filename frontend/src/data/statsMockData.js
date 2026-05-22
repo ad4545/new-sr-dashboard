@@ -25,14 +25,57 @@ export const INTERVALS = [
 
 // Tasks scheduled vs completed per 2-hour interval (today)
 export const THROUGHPUT_BY_INTERVAL = [
-  { interval: "06–08", scheduled: 28, completed: 24 },
-  { interval: "08–10", scheduled: 42, completed: 38 },
-  { interval: "10–12", scheduled: 36, completed: 33 },
-  { interval: "12–14", scheduled: 22, completed: 18 },
-  { interval: "14–16", scheduled: 45, completed: 41 },
-  { interval: "16–18", scheduled: 38, completed: 34 },
-  { interval: "18–20", scheduled: 25, completed: 22 },
-  { interval: "20–22", scheduled: 12, completed: 9 },
+  { interval: "06–08", scheduled: 28, completed: 24, failed: 2 },
+  { interval: "08–10", scheduled: 42, completed: 38, failed: 3 },
+  { interval: "10–12", scheduled: 36, completed: 33, failed: 2 },
+  { interval: "12–14", scheduled: 22, completed: 18, failed: 2 },
+  { interval: "14–16", scheduled: 45, completed: 41, failed: 3 },
+  { interval: "16–18", scheduled: 38, completed: 34, failed: 2 },
+  { interval: "18–20", scheduled: 25, completed: 22, failed: 1 },
+  { interval: "20–22", scheduled: 12, completed: 9, failed: 1 },
+];
+
+export const THROUGHPUT_BY_WEEK = [
+  { day: "Mon", scheduled: 42, completed: 37, failed: 2 },
+  { day: "Tue", scheduled: 38, completed: 34, failed: 2 },
+  { day: "Wed", scheduled: 46, completed: 41, failed: 3 },
+  { day: "Thu", scheduled: 40, completed: 35, failed: 3 },
+  { day: "Fri", scheduled: 45, completed: 40, failed: 3 },
+  { day: "Sat", scheduled: 37, completed: 32, failed: 3 },
+];
+
+export const THROUGHPUT_BY_MONTH = [
+  { day: "1", scheduled: 34, completed: 30, failed: 2 },
+  { day: "2", scheduled: 38, completed: 34, failed: 2 },
+  { day: "3", scheduled: 26, completed: 23, failed: 1 },
+  { day: "4", scheduled: 41, completed: 36, failed: 3 },
+  { day: "5", scheduled: 45, completed: 40, failed: 2 },
+  { day: "6", scheduled: 39, completed: 35, failed: 2 },
+  { day: "7", scheduled: 43, completed: 38, failed: 3 },
+  { day: "8", scheduled: 37, completed: 33, failed: 2 },
+  { day: "9", scheduled: 44, completed: 39, failed: 2 },
+  { day: "10", scheduled: 31, completed: 27, failed: 2 },
+  { day: "11", scheduled: 42, completed: 37, failed: 3 },
+  { day: "12", scheduled: 46, completed: 41, failed: 2 },
+  { day: "13", scheduled: 40, completed: 35, failed: 3 },
+  { day: "14", scheduled: 48, completed: 43, failed: 2 },
+  { day: "15", scheduled: 36, completed: 32, failed: 2 },
+  { day: "16", scheduled: 43, completed: 38, failed: 3 },
+  { day: "17", scheduled: 28, completed: 25, failed: 1 },
+  { day: "18", scheduled: 45, completed: 40, failed: 2 },
+  { day: "19", scheduled: 47, completed: 42, failed: 3 },
+  { day: "20", scheduled: 41, completed: 36, failed: 2 },
+  { day: "21", scheduled: 44, completed: 39, failed: 2 },
+  { day: "22", scheduled: 38, completed: 34, failed: 2 },
+  { day: "23", scheduled: 35, completed: 31, failed: 2 },
+  { day: "24", scheduled: 27, completed: 24, failed: 1 },
+  { day: "25", scheduled: 43, completed: 38, failed: 3 },
+  { day: "26", scheduled: 46, completed: 41, failed: 2 },
+  { day: "27", scheduled: 40, completed: 36, failed: 2 },
+  { day: "28", scheduled: 45, completed: 40, failed: 3 },
+  { day: "29", scheduled: 39, completed: 35, failed: 2 },
+  { day: "30", scheduled: 42, completed: 37, failed: 2 },
+  { day: "31", scheduled: 29, completed: 26, failed: 1 },
 ];
 
 // Average speed per task by 2-hour interval (m/s)
@@ -76,7 +119,6 @@ export const TASKS_SCHEDULED = {
 
 export const TASKS_COMPLETED = {
   total: 219,
-  completionRate: 88.3,
   delta: 4,
   series: [
     { day: "Mon", value: 28 },
@@ -119,43 +161,29 @@ export const AVG_TIME = {
   ],
 };
 
-// Battery consumption per task type (avg %)
-export const BATTERY_PER_TASK = {
-  avg: 6.2,
-  unit: "%",
-  byType: [
-    { type: "Pallet Transport", value: 8.4 },
-    { type: "Kit Delivery", value: 5.1 },
-    { type: "Bin Pickup", value: 4.2 },
-    { type: "Assembly Feed", value: 7.6 },
-    { type: "Empty Return", value: 3.8 },
-    { type: "Inspection", value: 5.5 },
-  ],
-};
+export const TASK_DURATION_DISTRIBUTION = [
+  { range: "0–5", tasks: 96 },
+  { range: "5–10", tasks: 78 },
+  { range: "10–15", tasks: 31 },
+  { range: "15–20", tasks: 10 },
+  { range: "20+", tasks: 4 },
+];
 
-// Tasks per charge cycle per robot
-export const TASKS_PER_CHARGE = {
-  avg: 14.5,
-  byRobot: [
-    { robot: "AMR-01", value: 16.2 },
-    { robot: "AMR-02", value: 14.8 },
-    { robot: "AMR-03", value: 12.1 },
-    { robot: "AMR-04", value: 15.5 },
-    { robot: "AMR-05", value: 13.7 },
-    { robot: "AMR-06", value: 12.9 },
-    { robot: "AMR-07", value: 17.1 },
-    { robot: "AMR-08", value: 0 },
-  ],
-};
+export const DAILY_FLEET_UTILIZATION_HOURS = [
+  { name: "Productive Time", hours: 34.8, color: "#10B981" },
+  { name: "Idle", hours: 9.4, color: "#64748B" },
+  { name: "Charging", hours: 3.8, color: "#F59E0B" },
+];
 
-// Robot idle time %
-export const IDLE_TIME = {
-  avg: 22, // %
-  byStatus: [
-    { name: "Active", value: 64, color: "#00C2FF" },
-    { name: "Idle", value: 22, color: "#64748B" },
-    { name: "Charging", value: 11, color: "#F59E0B" },
-    { name: "Service", value: 3, color: "#EF4444" },
+// Fleet utilization split by reporting window
+export const FLEET_UTILIZATION = {
+  week: [
+    { name: "Working", value: 76, color: "#10B981" },
+    { name: "Idle", value: 24, color: "#64748B" },
+  ],
+  month: [
+    { name: "Working", value: 71, color: "#10B981" },
+    { name: "Idle", value: 29, color: "#64748B" },
   ],
 };
 
